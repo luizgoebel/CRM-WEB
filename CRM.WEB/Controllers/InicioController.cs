@@ -1,20 +1,11 @@
-﻿using CRM.Web.Controllers;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace CRM.WEB.Controllers;
 
-public class InicioController : BaseController
+public class InicioController : Controller
 {
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        try
-        {
-            return RedirectToAction("Index", "DashBoard");
-        }
-        catch
-        {
-            return RedirectToAction("Index", "AcessoNaoAutorizado");
-        }
+        return View();
     }
 }

@@ -26,6 +26,7 @@ public class Startup
         this.ConfigurarUsoCamelCaseJSON(services);
 
         services.AddHttpClient();
+        services.AddControllersWithViews();
         //services.AddSession();
         services.Configure<AppSettings>(Configuration);
         this.AdicionarHttpClientsAoEscopo(services);
