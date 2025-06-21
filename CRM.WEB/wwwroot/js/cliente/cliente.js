@@ -12,7 +12,7 @@
         return;
     }
 
-    const table = document.getElementById("clientesTable");
+    const table = document.getElementById("tabelaClientes");
     const trs = table.getElementsByTagName("tr");
 
     for (let i = 1; i < trs.length; i++) {
