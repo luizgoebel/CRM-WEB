@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
+using System;
 
 namespace CRM.Web;
 
@@ -24,17 +25,18 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddMemoryCache();
-
-        this.ConfigurarUsoCamelCaseJSON(services);
-
         services.AddControllersWithViews();
+        ConfigurarUsoCamelCaseJSON(services);
 
         services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-        // ✅ Configuração correta do HttpClient e cliente da API
-        services.AddHttpClient<IClienteServiceClient, ClienteServiceClient>();
+        // ✅ Configura o HttpClient já com o BaseAddress direto do appsettings.json
+        services.AddHttpClient<IClienteServiceClient, ClienteServiceClient>(client =>
+        {
+            client.BaseAddress = new Uri(Configuration.GetSection("AppSettings")["CrmApi"]);
+        });
 
-        this.AdicionarMinificacao(services);
+        AdicionarMinificacao(services);
     }
 
     public void Configure(WebApplication app)
@@ -42,7 +44,7 @@ public class Startup
         var supportedCultures = new[] { new CultureInfo("pt-BR") };
         app.UseRequestLocalization(new RequestLocalizationOptions
         {
-            DefaultRequestCulture = new RequestCulture(culture: "pt-BR", uiCulture: "pt-BR"),
+            DefaultRequestCulture = new RequestCulture("pt-BR"),
             SupportedCultures = supportedCultures,
             SupportedUICultures = supportedCultures
         });
@@ -52,11 +54,7 @@ public class Startup
             app.UseDeveloperExceptionPage();
         }
 
-        app.Use((context, next) =>
-        {
-            context.Request.Scheme = "https";
-            return next();
-        });
+        app.UseHttpsRedirection(); // Força HTTPS
 
         app.UseWebOptimizer();
         app.UseStaticFiles();
