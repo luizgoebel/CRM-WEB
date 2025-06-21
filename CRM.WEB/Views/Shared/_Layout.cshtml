@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CRM.WEB</title>
+    <title>@ViewData["Title"] - CRM</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CRM.WEB.styles.css" asp-append-version="true" />
@@ -12,14 +12,29 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">CRM WEB</a>
+                <!-- Logo à esquerda -->
+                <a class="navbar-brand">CRM WEB</a>
+                <!-- Botão do menu colapsado no mobile -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <!-- Menu alinhado à direita -->
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <!-- Dropdown Cadastro -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Cadastro
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cadastroDropdown">
+                                <li><a class="dropdown-item" href="#">Cliente</a></li>
+                                <li><a class="dropdown-item" href="#">Produto</a></li>
+                                <li><a class="dropdown-item" href="#">Pedido</a></li>
+                            </ul>
+                        </li>
+                        <!-- Links normais -->
                         <li class="nav-item">
-                            <a class="nav-link active" href="/">Início</a>
+                            <a class="nav-link" href="#">Clientes</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Produtos</a>
@@ -27,12 +42,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">Pedidos</a>
                         </li>
+
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-
     <main role="main" class="container mt-4">
         @RenderBody()
     </main>
