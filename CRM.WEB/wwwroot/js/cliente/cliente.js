@@ -1,6 +1,17 @@
 ﻿function filtroTabela() {
     const input = document.getElementById("searchInput");
     const filter = input.value.toLowerCase();
+
+    // Não filtra se for nulo, vazio ou iniciar com espaço
+    if (!filter || filter.trim() === "" || input.value.startsWith(" ")) {
+        const table = document.getElementById("clientesTable");
+        const trs = table.getElementsByTagName("tr");
+        for (let i = 1; i < trs.length; i++) {
+            trs[i].style.display = "";
+        }
+        return;
+    }
+
     const table = document.getElementById("clientesTable");
     const trs = table.getElementsByTagName("tr");
 
