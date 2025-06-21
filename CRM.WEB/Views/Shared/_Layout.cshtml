@@ -4,7 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CRM</title>
+
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <!-- CSS customizado do projeto -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CRM.WEB.styles.css" asp-append-version="true" />
 </head>
@@ -13,11 +20,13 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <!-- Logo à esquerda -->
-                <a class="navbar-brand">CRM WEB</a>
-                <!-- Botão do menu colapsado no mobile -->
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">CRM WEB</a>
+
+                <!-- Botão menu colapsado no mobile -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <!-- Menu alinhado à direita -->
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -27,12 +36,13 @@
                                 Cadastro
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cadastroDropdown">
-                                <li><a class="dropdown-item" href="#">Cliente</a></li>
+                                <li><a class="dropdown-item" asp-controller="Cliente" asp-action="Index">Cliente</a></li>
                                 <li><a class="dropdown-item" href="#">Produto</a></li>
                                 <li><a class="dropdown-item" href="#">Pedido</a></li>
                             </ul>
                         </li>
-                        <!-- Links normais -->
+
+                        <!-- Links diretos -->
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Cliente" asp-action="Index">Clientes</a>
                         </li>
@@ -42,19 +52,21 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">Pedidos</a>
                         </li>
-
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <main role="main" class="container mt-4">
         @RenderBody()
     </main>
 
+    <!-- Bibliotecas JS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Scripts específicos por página -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

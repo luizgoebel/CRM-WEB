@@ -1,3 +1,56 @@
-﻿@{
+﻿@using CRM.Web.Models
+
+@model IEnumerable<ClienteViewModel>
+
+@{
     ViewData["Title"] = "Clientes";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        <a href="@Url.Action("Registrar", "Clientes")" class="btn btn-primary">Novo Cliente</a>
+    </div>
+    <div>
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar..." onkeyup="filterTable()" />
+    </div>
+</div>
+
+<table class="table table-striped" id="clientesTable">
+    <thead>
+        <tr>
+            <th style="display:none;">ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Endereco</th>
+            <th>Telefone</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cliente in Model)
+        {
+            <tr>
+                <td style="display:none;">@cliente.Id</td>
+                <td>@cliente.Nome</td>
+                <td>@cliente.Email</td>
+                <td>@cliente.Endereco</td>
+                <td>@cliente.Telefone</td>
+                <td>
+                    <a href="@Url.Action("Editar", "Clientes", new { id = cliente.Id })" class="btn btn-sm btn-warning" title="Editar">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="@Url.Action("Visualizar", "Clientes", new { id = cliente.Id })" class="btn btn-sm btn-info" title="Visualizar">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/js/cliente/cliente.js"></script>
 }
