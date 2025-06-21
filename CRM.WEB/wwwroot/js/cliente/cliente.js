@@ -1,4 +1,4 @@
-﻿function filterTable() {
+﻿function filtroTabela() {
     const input = document.getElementById("searchInput");
     const filter = input.value.toLowerCase();
     const table = document.getElementById("clientesTable");
