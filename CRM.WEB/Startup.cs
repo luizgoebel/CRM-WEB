@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using CRM.Web.ServiceClient.IServiceClient;
+using CRM.Web.ServiceClient;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
@@ -25,11 +27,13 @@ public class Startup
 
         this.ConfigurarUsoCamelCaseJSON(services);
 
-        services.AddHttpClient();
         services.AddControllersWithViews();
-        //services.AddSession();
-        services.Configure<AppSettings>(Configuration);
-        this.AdicionarHttpClientsAoEscopo(services);
+
+        services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
+        // ✅ Configuração correta do HttpClient e cliente da API
+        services.AddHttpClient<IClienteServiceClient, ClienteServiceClient>();
+
         this.AdicionarMinificacao(services);
     }
 
@@ -55,24 +59,15 @@ public class Startup
         });
 
         app.UseWebOptimizer();
-
         app.UseStaticFiles();
         app.UseRouting();
-        //app.UseAuthentication();
-        //app.UseAuthorization();
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Inicio}/{action=Index}/{id?}");
         });
-    }
-
-    private void AdicionarHttpClientsAoEscopo(IServiceCollection services)
-    {
-        services.AddHttpContextAccessor();
-
-        //services.AddScoped<IDiarioGeradoServiceClient, DiarioGeradoServiceClient>();
     }
 
     private void ConfigurarUsoCamelCaseJSON(IServiceCollection services)

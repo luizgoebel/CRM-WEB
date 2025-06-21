@@ -1,11 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CRM.Web.Models;
+using CRM.Web.ServiceClient.IServiceClient;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CRM.Web.Controllers;
 
 public class ClienteController : Controller
 {
-    public IActionResult Index()
+    private readonly IClienteServiceClient _clienteServiceClient;
+
+    public ClienteController(IClienteServiceClient clienteServiceClient)
     {
-        return View();
+        _clienteServiceClient = clienteServiceClient;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        List<ClienteViewModel> clientes = await _clienteServiceClient.ObterTodosClientes();
+        return View(clientes);
     }
 }

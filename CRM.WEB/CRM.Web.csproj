@@ -12,9 +12,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Dtos\" />
-	  <Folder Include="ServiceClient\IServiceClient\" />
-	  <Folder Include="ServiceClient\URI\" />
-	  <Folder Include="Views\Cliente\" />
 	  <Folder Include="Views\Produto\" />
 	  <Folder Include="Views\Pedido\" />
 	</ItemGroup>
