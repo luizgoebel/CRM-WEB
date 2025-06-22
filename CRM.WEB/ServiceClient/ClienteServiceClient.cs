@@ -39,7 +39,7 @@ public class ClienteServiceClient : IClienteServiceClient
 
     public async Task SalvarCliente(ClienteViewModel clienteViewModel)
     {
-        HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Cliente/Atualizar", clienteViewModel);
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Cliente/SalvarCliente", clienteViewModel);
 
         await TrataExcecao.TratarResponseException(response);
     }
