@@ -16,57 +16,69 @@
     <link rel="stylesheet" href="~/CRM.WEB.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <!-- Logo à esquerda -->
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">CRM WEB</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <!-- Logo à esquerda -->
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">CRM WEB</a>
 
-                <!-- Botão menu colapsado no mobile -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <!-- Botão menu colapsado no mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <!-- Menu alinhado à direita -->
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <!-- Dropdown Cadastro -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Cadastro
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cadastroDropdown">
-                                <li><a class="dropdown-item" asp-controller="Cliente" asp-action="Index">Cliente</a></li>
-                                <li><a class="dropdown-item" href="#">Produto</a></li>
-                                <li><a class="dropdown-item" href="#">Pedido</a></li>
-                            </ul>
-                        </li>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Menu alinhado à direita -->
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <!-- Dropdown Cadastro -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Cadastro
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cadastroDropdown">
+                            <li><a class="dropdown-item" asp-controller="Cliente" asp-action="Index">Cliente</a></li>
+                            <li><a class="dropdown-item" href="#">Produto</a></li>
+                            <li><a class="dropdown-item" href="#">Pedido</a></li>
+                        </ul>
+                    </li>
 
-                        <!-- Links diretos -->
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Cliente" asp-action="Index">Clientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Produtos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pedidos</a>
-                        </li>
-                    </ul>
-                </div>
+                    <!-- Links diretos -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Cliente" asp-action="Index">Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Produtos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Pedidos</a>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
     <main role="main" class="container mt-4">
         @RenderBody()
     </main>
 
+    <!-- Seus elementos globais -->
+    <div id="popupMensagem" class="alert position-fixed top-0 end-0 m-4 fade"
+         style="z-index: 9999; display: none; min-width: 250px;"></div>
+
+    <div id="spinnerGlobal" class="position-fixed top-50 start-50 translate-middle"
+         style="z-index: 9999; display: none;">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+    </div>
+
     <!-- Bibliotecas JS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Seus scripts JS globais -->
+    <script src="~/js/utils/globais.js"></script>
+    <script src="~/js/cliente/cliente.js"></script>
+
     <!-- Scripts específicos por página -->
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
