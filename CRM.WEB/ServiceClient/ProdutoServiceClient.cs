@@ -17,6 +17,16 @@ public class ProdutoServiceClient : IProdutoServiceClient
         _httpClient = httpClient;
     }
 
+    public async Task<ProdutoViewModel> ObterPorId(int id)
+    {
+        HttpResponseMessage response = await _httpClient.GetAsync($"api/Produto/ObterPorId?id={id}");
+
+        await TrataExcecao.TratarResponseException(response);
+
+        var produto = await response.Content.ReadFromJsonAsync<ProdutoViewModel>();
+        return produto!;
+    }
+
     public async Task<List<ProdutoViewModel>> ObterTodosClientes()
     {
         HttpResponseMessage response = await _httpClient.GetAsync("api/Produto/ObterTodosProdutos");

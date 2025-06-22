@@ -27,8 +27,8 @@
             esconderSpinner()
             $('#clienteModal').modal('show');
         },
-        error: function (resultado, status, error) {
-            mostrarMensagem(resultado.mensagem);
+        error: function (resultado) {
+            mostrarMensagem("Erro inesperado no servidor.");
             esconderSpinner()
         }
     });
@@ -57,8 +57,8 @@ function salvarCliente() {
             location.reload();
         },
         error: function (resultado) {
-            mostrarMensagem(resultado.mensagem);
-            esconderSpinner()
+            mostrarMensagem("Erro inesperado no servidor.");
+            esconderSpinner();
         }
     });
 }

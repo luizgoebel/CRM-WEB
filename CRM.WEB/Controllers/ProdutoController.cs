@@ -1,4 +1,6 @@
 ﻿using CRM.Web.Exceptions;
+using CRM.Web.Models;
+using CRM.Web.ServiceClient;
 using CRM.Web.ServiceClient.IServiceClient;
 using CRM.Web.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +24,27 @@ public class ProdutoController : Controller
         {
             var produtos = await _produtoServiceClient.ObterTodosClientes();
             return View(produtos);
+        }
+        catch (DomainException ex)
+        {
+            return GerenciadorRespostaJSON.create(ex.Message, true);
+        }
+        catch (Exception ex)
+        {
+            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+        }
+    }
+
+    public async Task<IActionResult> ProdutoModal(int? id, bool somenteVisualizacao = false)
+    {
+        try
+        {
+            ProdutoViewModel produto = id.HasValue
+                ? await _produtoServiceClient.ObterPorId(id.Value)
+                : new ProdutoViewModel();
+
+            ViewBag.SomenteLeitura = somenteVisualizacao;
+            return PartialView("_ProdutoModal", produto);
         }
         catch (DomainException ex)
         {
