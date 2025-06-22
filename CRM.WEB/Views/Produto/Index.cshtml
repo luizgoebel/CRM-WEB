@@ -1,0 +1,67 @@
+﻿@using CRM.Web.Models
+
+@model IEnumerable<ProdutoViewModel>
+
+@{
+    ViewData["Title"] = "Produtos";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        <a href="javascript:void(0);" onclick="abrirModalProduto(null, false)" class="btn btn-primary">
+            Novo Produto
+        </a>
+    </div>
+    <div>
+        <input type="text" id="searchProdutoInput" class="form-control" placeholder="Buscar..." onkeyup="filtroTabelaProduto()" />
+    </div>
+</div>
+
+<table class="table table-striped" id="tabelaProdutos">
+    <thead>
+        <tr>
+            <th style="display:none;">ID</th>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var produto in Model)
+        {
+                <tr>
+                    <td style="display:none;">@produto.Id</td>
+                    <td>@produto.Nome</td>
+                    <td>R$ @produto.Preco?.ToString("F2")</td>
+                    <td>
+                        <a href="javascript:void(0);" onclick="abrirModalProduto(@produto.Id, false)" class="btn btn-sm btn-warning" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="javascript:void(0);" onclick="abrirModalProduto(@produto.Id, true)" class="btn btn-sm btn-info" title="Visualizar">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal genérico reutilizável -->
+<div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="produtoModalLabel">Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body" id="produtoModalBody">
+                <!-- conteúdo carregado via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+}

@@ -36,7 +36,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cadastroDropdown">
                             <li><a class="dropdown-item" asp-controller="Cliente" asp-action="Index">Cliente</a></li>
-                            <li><a class="dropdown-item" href="#">Produto</a></li>
+                            <li><a class="dropdown-item" asp-controller="Produto" asp-action="Index">Produto</a></li>
                             <li><a class="dropdown-item" href="#">Pedido</a></li>
                         </ul>
                     </li>
@@ -46,7 +46,7 @@
                         <a class="nav-link" asp-controller="Cliente" asp-action="Index">Clientes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Produtos</a>
+                        <a class="nav-link" asp-controller="Produto" asp-action="Index">Produtos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Pedidos</a>
@@ -71,6 +71,7 @@
     <!-- Seus scripts JS globais -->
     <script src="~/js/utils/globais.js"></script>
     <script src="~/js/cliente/cliente.js"></script>
+    <script src="~/js/produto/produto.js"></script>
 
     <!-- Scripts específicos por página -->
     @await RenderSectionAsync("Scripts", required: false)

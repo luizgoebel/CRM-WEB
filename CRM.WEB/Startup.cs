@@ -1,13 +1,13 @@
-﻿using CRM.Web.ServiceClient.IServiceClient;
-using CRM.Web.ServiceClient;
+﻿using CRM.Web.ServiceClient;
+using CRM.Web.ServiceClient.IServiceClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Globalization;
 using System;
+using System.Globalization;
 
 namespace CRM.Web;
 
@@ -15,7 +15,6 @@ public class Startup
 {
     private IConfiguration Configuration;
     private IWebHostEnvironment Ambiente;
-
     public Startup(IConfiguration configuration, IWebHostEnvironment ambiente)
     {
         Configuration = configuration;
@@ -24,16 +23,21 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        var crmApiBaseAddress = new Uri(Configuration.GetSection("AppSettings")["CrmApi"]);
         services.AddMemoryCache();
         services.AddControllersWithViews();
         ConfigurarUsoCamelCaseJSON(services);
 
         services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-        // ✅ Configura o HttpClient já com o BaseAddress direto do appsettings.json
+        // ✅ Configura o HttpClient já com o BaseAddress direto do appsettings.json  
+        services.AddHttpClient<IProdutoServiceClient, ProdutoServiceClient>(client =>
+        {
+            client.BaseAddress = crmApiBaseAddress;
+        });
         services.AddHttpClient<IClienteServiceClient, ClienteServiceClient>(client =>
         {
-            client.BaseAddress = new Uri(Configuration.GetSection("AppSettings")["CrmApi"]);
+            client.BaseAddress = crmApiBaseAddress;
         });
 
         AdicionarMinificacao(services);

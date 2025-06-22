@@ -1,0 +1,29 @@
+﻿using CRM.Web.Models;
+using CRM.Web.ServiceClient.IServiceClient;
+using CRM.Web.Utils;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+
+namespace CRM.Web.ServiceClient;
+
+public class ProdutoServiceClient : IProdutoServiceClient
+{
+    private readonly HttpClient _httpClient;
+
+    public ProdutoServiceClient(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+    public async Task<List<ProdutoViewModel>> ObterTodosClientes()
+    {
+        HttpResponseMessage response = await _httpClient.GetAsync("api/Produto/ObterTodosProdutos");
+
+        await TrataExcecao.TratarResponseException(response);
+
+        var produtos = await response.Content.ReadFromJsonAsync<List<ProdutoViewModel>>();
+        return produtos ?? new List<ProdutoViewModel>();
+    }
+}

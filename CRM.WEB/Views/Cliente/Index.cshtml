@@ -10,7 +10,7 @@
 
 <div class="d-flex justify-content-between mb-3">
     <div>
-        <a href="javascript:void(0);" onclick="abrirModalCliente('@Url.Action("RegistrarCliente", "Cliente", new { somenteVisualizacao = false } )')" class="btn btn-primary">
+        <a href="javascript:void(0);" onclick="abrirModalCliente(null, false)" class="btn btn-primary">
             Novo Cliente
         </a>
     </div>
@@ -67,6 +67,3 @@
     </div>
 </div>
 
-@section Scripts {
-    <script src="~/js/cliente/cliente.js"></script>
-}
