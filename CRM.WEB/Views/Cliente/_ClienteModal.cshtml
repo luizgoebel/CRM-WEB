@@ -3,7 +3,7 @@
     bool somenteLeitura = ViewBag.SomenteLeitura ?? false;
 }
 
-<form id="formClienteModal" method="post" action="/Cliente/SalvarCliente">
+<form id="formClienteModal" method="post" action="/Cliente/SalvarCliente" draggable="false"> 
     <input type="hidden" name="Id" value="@Model?.Id" />
 
     <div class="mb-3">

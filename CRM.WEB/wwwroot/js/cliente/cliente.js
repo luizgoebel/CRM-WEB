@@ -10,13 +10,26 @@
     $.ajax({
         url: url,
         type: 'GET',
-        success: function (html) {
-            $('#clienteModalBody').html(html);
+        beforeSend: function () {
+            mostrarSpinner()
+        },
+        success: function (response) {
+            if (response?.contemErro) {
+                mostrarMensagem(resultado.mensagem);
+                esconderSpinner()
+                return;
+            }
+            $('#clienteModalBody').html(response);
+            $('#clienteModal').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            esconderSpinner()
             $('#clienteModal').modal('show');
         },
-        error: function (xhr, status, error) {
-            alert("Erro ao carregar o conteúdo do modal.");
-            console.error(error);
+        error: function (resultado, status, error) {
+            mostrarMensagem(resultado.mensagem);
+            esconderSpinner()
         }
     });
 }
@@ -25,7 +38,7 @@ function salvarCliente() {
     var form = $('#formClienteModal');
     var url = form.attr('action');
     var data = form.serialize();
-   
+
     $.ajax({
         url: url,
         type: 'POST',
@@ -40,6 +53,7 @@ function salvarCliente() {
                 return;
             }
             $('#clienteModal').modal('hide');
+            esconderSpinner()
             location.reload();
         },
         error: function (resultado) {
