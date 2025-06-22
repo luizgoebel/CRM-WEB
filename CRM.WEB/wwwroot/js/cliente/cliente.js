@@ -25,19 +25,26 @@ function salvarCliente() {
     var form = $('#formClienteModal');
     var url = form.attr('action');
     var data = form.serialize();
-
+   
     $.ajax({
         url: url,
         type: 'POST',
         data: data,
-        success: function () {
-            $('#clienteModal').modal('hide');
-            //alert('Cliente salvo com sucesso!');
-            location.reload(); // depois podemos melhorar só atualizando a tabela via AJAX
+        beforeSend: function () {
+            mostrarSpinner()
         },
-        error: function (xhr) {
-            alert('Erro ao salvar cliente.');
-            console.error(xhr.responseText);
+        success: function (response) {
+            if (response?.contemErro) {
+                mostrarMensagem(response.mensagem);
+                esconderSpinner()
+                return;
+            }
+            $('#clienteModal').modal('hide');
+            location.reload();
+        },
+        error: function (resultado) {
+            mostrarMensagem(resultado.mensagem);
+            esconderSpinner()
         }
     });
 }

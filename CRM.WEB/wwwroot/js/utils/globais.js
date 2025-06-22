@@ -10,7 +10,7 @@ function mostrarMensagem(mensagem) {
      const classe = 'alert-info';
 
     const $wrapper = $('#popupMensagemWrapper');
-    const $popup = $('#popupMensagem');
+    const $popup = $('#popupMensagemConteudo');
 
     $popup
         .removeClass()
