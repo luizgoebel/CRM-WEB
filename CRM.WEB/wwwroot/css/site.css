@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.btn-igual {
+    min-width: 120px; /* ajuste conforme necessário */
+}

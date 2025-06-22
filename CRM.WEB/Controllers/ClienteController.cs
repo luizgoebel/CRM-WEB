@@ -20,4 +20,14 @@ public class ClienteController : Controller
         List<ClienteViewModel> clientes = await _clienteServiceClient.ObterTodosClientes();
         return View(clientes);
     }
+    
+    public async Task<IActionResult> ClienteModal(int? id, bool somenteVisualizacao = false)
+    {
+        ClienteViewModel cliente = id.HasValue
+            ? await _clienteServiceClient.ObterPorId(id.Value)
+            : new ClienteViewModel();
+
+        ViewBag.SomenteLeitura = somenteVisualizacao;
+        return PartialView("_ClienteModal", cliente);
+    }
 }

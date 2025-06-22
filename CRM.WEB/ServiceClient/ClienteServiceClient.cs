@@ -16,6 +16,12 @@ public class ClienteServiceClient : IClienteServiceClient
         _httpClient = httpClient;
     }
 
+    public async Task<ClienteViewModel> ObterPorId(int id)
+    {
+        ClienteViewModel cliente = await _httpClient.GetFromJsonAsync<ClienteViewModel>($"api/Cliente/ObterPorId?id={id}");
+        return cliente;
+    }
+
     public async Task<List<ClienteViewModel>> ObterTodosClientes()
     {
         List<ClienteViewModel> clientes = await _httpClient.GetFromJsonAsync<List<ClienteViewModel>>("api/Cliente/ObterTodosClientes");

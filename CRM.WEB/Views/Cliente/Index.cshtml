@@ -10,7 +10,9 @@
 
 <div class="d-flex justify-content-between mb-3">
     <div>
-        <a href="@Url.Action("Registrar", "Clientes")" class="btn btn-primary">Novo Cliente</a>
+        <a href="javascript:void(0);" onclick="abrirModalCliente('@Url.Action("RegistrarCliente", "Cliente", new { somenteVisualizacao = false } )')" class="btn btn-primary">
+            Novo Cliente
+        </a>
     </div>
     <div>
         <input type="text" id="searchInput" class="form-control" placeholder="Buscar..." onkeyup="filtroTabela()" />
@@ -38,10 +40,10 @@
                 <td>@cliente.Endereco</td>
                 <td>@cliente.Telefone</td>
                 <td>
-                    <a href="@Url.Action("Editar", "Clientes", new { id = cliente.Id })" class="btn btn-sm btn-warning" title="Editar">
+                    <a href="javascript:void(0);" onclick="abrirModalCliente(@cliente.Id, false)" class="btn btn-sm btn-warning" title="Editar">
                         <i class="bi bi-pencil"></i>
                     </a>
-                    <a href="@Url.Action("Visualizar", "Clientes", new { id = cliente.Id })" class="btn btn-sm btn-info" title="Visualizar">
+                    <a href="javascript:void(0);" onclick="abrirModalCliente(@cliente.Id, true)" class="btn btn-sm btn-info" title="Visualizar">
                         <i class="bi bi-eye"></i>
                     </a>
                 </td>
@@ -49,6 +51,21 @@
         }
     </tbody>
 </table>
+
+<!-- Modal genérico reutilizável -->
+<div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clienteModalLabel">Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body" id="clienteModalBody">
+                <!-- O conteúdo do modal (formulário) será carregado aqui via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="~/js/cliente/cliente.js"></script>

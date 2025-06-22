@@ -1,31 +1,43 @@
-﻿function filtroTabela() {
-    const input = document.getElementById("searchInput");
-    const filter = input.value.toLowerCase();
+﻿function abrirModalCliente(id, somenteVisualizacao) {
+    var url = '/Cliente/ClienteModal';
 
-    // Não filtra se for nulo, vazio ou iniciar com espaço
-    if (!filter || filter.trim() === "" || input.value.startsWith(" ")) {
-        const table = document.getElementById("clientesTable");
-        const trs = table.getElementsByTagName("tr");
-        for (let i = 1; i < trs.length; i++) {
-            trs[i].style.display = "";
-        }
-        return;
+    if (id) {
+        url += `?id=${id}&somenteVisualizacao=${somenteVisualizacao}`;
+    } else {
+        url += `?somenteVisualizacao=${somenteVisualizacao}`;
     }
 
-    const table = document.getElementById("tabelaClientes");
-    const trs = table.getElementsByTagName("tr");
-
-    for (let i = 1; i < trs.length; i++) {
-        const tds = trs[i].getElementsByTagName("td");
-        let show = false;
-
-        for (let j = 1; j < tds.length - 1; j++) {
-            if (tds[j].textContent.toLowerCase().indexOf(filter) > -1) {
-                show = true;
-                break;
-            }
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (html) {
+            $('#clienteModalBody').html(html);
+            $('#clienteModal').modal('show');
+        },
+        error: function (xhr, status, error) {
+            alert("Erro ao carregar o conteúdo do modal.");
+            console.error(error);
         }
+    });
+}
 
-        trs[i].style.display = show ? "" : "none";
-    }
+function salvarCliente() {
+    var form = $('#formClienteModal');
+    var url = form.attr('action');
+    var data = form.serialize();
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: data,
+        success: function () {
+            $('#clienteModal').modal('hide');
+            //alert('Cliente salvo com sucesso!');
+            location.reload(); // depois podemos melhorar só atualizando a tabela via AJAX
+        },
+        error: function (xhr) {
+            alert('Erro ao salvar cliente.');
+            console.error(xhr.responseText);
+        }
+    });
 }

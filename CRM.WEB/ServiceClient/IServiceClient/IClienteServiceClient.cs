@@ -7,4 +7,5 @@ namespace CRM.Web.ServiceClient.IServiceClient;
 public interface IClienteServiceClient
 {
     Task<List<ClienteViewModel>> ObterTodosClientes();
+    Task<ClienteViewModel> ObterPorId(int id);
 }
