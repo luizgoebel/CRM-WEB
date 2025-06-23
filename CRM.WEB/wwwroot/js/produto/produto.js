@@ -64,11 +64,22 @@ function salvarProduto() {
 }
 
 function filtroTabelaProduto() {
-    const input = document.getElementById("searchProdutoInput").value.toLowerCase();
-    const linhas = document.querySelectorAll("#tabelaProdutos tbody tr");
+    const input = document.getElementById("searchProdutoInput");
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById("tabelaProdutos");
+    const trs = table.getElementsByTagName("tr");
 
-    linhas.forEach(tr => {
-        const texto = tr.textContent.toLowerCase();
-        tr.style.display = texto.includes(input) ? "" : "none";
-    });
+    for (let i = 1; i < trs.length; i++) {
+        const tds = trs[i].getElementsByTagName("td");
+        let show = false;
+
+        for (let j = 1; j < tds.length - 1; j++) {
+            if (tds[j].textContent.toLowerCase().indexOf(filter) > -1) {
+                show = true;
+                break;
+            }
+        }
+
+        trs[i].style.display = show ? "" : "none";
+    }
 }
