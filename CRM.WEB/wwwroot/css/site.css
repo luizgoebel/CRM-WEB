@@ -24,3 +24,65 @@ body {
 .btn-igual {
     min-width: 120px; /* ajuste conforme necessário */
 }
+
+#wrapper {
+    display: flex;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+    width: 250px;
+    min-height: 100vh;
+    transition: all 0.3s;
+    overflow-y: auto;
+}
+
+#page-content-wrapper {
+    flex: 1;
+    padding: 1rem 2rem;
+    transition: all 0.3s;
+}
+
+/* Sidebar recolhida */
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: -250px;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+}
+
+/* Botão sempre visível */
+#menu-toggle {
+    z-index: 1051;
+}
+
+/* Estilo dos itens do menu */
+.list-group-item {
+    border: none;
+}
+
+    .list-group-item:hover,
+    .list-group-item:focus {
+        background-color: #343a40;
+        color: #ffffff;
+    }
+
+    .list-group-item.active {
+        background-color: #0d6efd;
+        color: #fff;
+        font-weight: 600;
+    }
+
+/* Remover espaço para o logo que foi retirado */
+.sidebar-heading {
+    display: none;
+}
