@@ -36,4 +36,11 @@ public class ProdutoServiceClient : IProdutoServiceClient
         var produtos = await response.Content.ReadFromJsonAsync<List<ProdutoViewModel>>();
         return produtos ?? new List<ProdutoViewModel>();
     }
+
+    public async Task SalvarProduto(ProdutoViewModel produtoViewModel)
+    {
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Produto/Salvar", produtoViewModel);
+
+        await TrataExcecao.TratarResponseException(response);
+    }
 }

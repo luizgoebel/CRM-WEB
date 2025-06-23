@@ -13,7 +13,7 @@
 
     <div class="mb-3">
         <label for="precoProduto" class="form-label">Preço:</label>
-        <input type="number" step="0.01" class="form-control" id="precoProduto" name="Preco" value="@Model?.Preco" @(somenteLeitura ? "readonly" : "") />
+        <input type="number" step="0.01" class="form-control" id="precoProduto" name="Preco" value="@(Model?.Preco?.ToString(System.Globalization.CultureInfo.InvariantCulture))" @(somenteLeitura ? "readonly" : "") />
     </div>
 
     <div class="d-flex justify-content-end gap-2">
