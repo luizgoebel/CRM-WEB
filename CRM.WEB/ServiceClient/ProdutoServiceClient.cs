@@ -17,6 +17,12 @@ public class ProdutoServiceClient : IProdutoServiceClient
         _httpClient = httpClient;
     }
 
+    public async Task ExcluirProduto(int idProduto)
+    {
+        HttpResponseMessage response = await _httpClient.PostAsync($"api/Produto/Remover?id={idProduto}", null);
+        await TrataExcecao.TratarResponseException(response);
+    }
+
     public async Task<ProdutoViewModel> ObterPorId(int id)
     {
         HttpResponseMessage response = await _httpClient.GetAsync($"api/Produto/ObterPorId?id={id}");

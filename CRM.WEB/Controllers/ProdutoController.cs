@@ -70,4 +70,21 @@ public class ProdutoController : Controller
             return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
         }
     }
+
+    public async Task<JsonResult> ExcluirProduto(int idProduto)
+    {
+        try
+        {
+            await _produtoServiceClient.ExcluirProduto(idProduto);
+            return GerenciadorRespostaJSON.create();
+        }
+        catch (DomainException ex)
+        {
+            return GerenciadorRespostaJSON.create(ex.Message, true);
+        }
+        catch (Exception ex)
+        {
+            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+        }
+    }
 }

@@ -24,3 +24,26 @@ function mostrarMensagem(mensagem) {
     });
 }
 
+function confirmarAcao(mensagem, callback) {
+    $('#popupConfirmacaoConteudo').text(mensagem || 'Deseja confirmar esta ação?');
+    $('#popupConfirmacaoWrapper').fadeIn(150);
+
+    function fechar() {
+        $('#popupConfirmacaoWrapper').fadeOut(150);
+        $('#btnConfirmarSim').off('click');
+        $('#btnConfirmarNao').off('click');
+        $('#btnFecharPopupConfirmacaoTopo').off('click');
+    }
+
+    $('#btnConfirmarSim').on('click', function () {
+        fechar();
+        if (typeof callback === 'function') callback(true);
+    });
+
+    $('#btnConfirmarNao, #btnFecharPopupConfirmacaoTopo').on('click', function () {
+        fechar();
+        if (typeof callback === 'function') callback(false);
+    });
+}
+
+

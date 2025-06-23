@@ -83,3 +83,32 @@ function filtroTabelaProduto() {
         trs[i].style.display = show ? "" : "none";
     }
 }
+
+function excluirProduto(id) {
+    confirmarAcao("Tem certeza que deseja excluir este produto?", function (confirmado) {
+        if (!confirmado) return;
+
+        $.ajax({
+            url: `/Produto/ExcluirProduto`,
+            type: 'POST',
+            data: { idProduto: id },
+            beforeSend: function () {
+                mostrarSpinner();
+            },
+            success: function (response) {
+                if (response?.contemErro) {
+                    mostrarMensagem(response.mensagem);
+                    esconderSpinner();
+                    return;
+                }
+                esconderSpinner();
+                location.reload(); // opcional
+            },
+            error: function () {
+                mostrarMensagem("Erro inesperado no servidor.");
+                esconderSpinner();
+            }
+        });
+    });
+}
+
