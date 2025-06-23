@@ -1,79 +1,94 @@
+/* Base font size para desktop e mobile */
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* Body com espaço inferior para footer ou algo fixo */
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
+/* Foco customizado para botões, inputs e links */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    outline: none; /* Remove o foco padrão */
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* Botões com largura mínima fixa */
 .btn-igual {
-    min-width: 120px; /* ajuste conforme necessário */
+    min-width: 120px; /* ajusta conforme necessidade */
 }
 
+/* Wrapper e estrutura do sidebar + conteúdo */
 #wrapper {
     display: flex;
     width: 100%;
     overflow-x: hidden;
 }
 
+/* Sidebar */
 #sidebar-wrapper {
     width: 250px;
     min-height: 100vh;
-    transition: all 0.3s;
+    transition: margin-left 0.3s ease; /* transição só no margin */
     overflow-y: auto;
+    margin-left: 0; /* padrão visível */
 }
 
+/* Conteúdo principal */
 #page-content-wrapper {
     flex: 1;
     padding: 1rem 2rem;
-    transition: all 0.3s;
+    transition: margin-left 0.3s ease;
 }
 
-/* Sidebar recolhida */
+/* Sidebar recolhida - aplica margin-left negativo */
 #wrapper.toggled #sidebar-wrapper {
     margin-left: -250px;
 }
 
-/* Responsivo */
+/* Para responsividade: sidebar recolhida por padrão no mobile */
 @media (max-width: 768px) {
     #sidebar-wrapper {
         margin-left: -250px;
     }
 
+    /* Quando toggled no mobile, sidebar aparece */
     #wrapper.toggled #sidebar-wrapper {
         margin-left: 0;
     }
 }
 
-/* Botão sempre visível */
+/* Botão de toggle fica sempre acima da sidebar */
 #menu-toggle {
+    position: relative; /* garantir z-index funcione */
     z-index: 1051;
 }
 
-/* Estilo dos itens do menu */
+/* Itens do menu: sem borda e estilos para hover/focus */
 .list-group-item {
     border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
     .list-group-item:hover,
     .list-group-item:focus {
         background-color: #343a40;
         color: #ffffff;
+        outline: none;
     }
 
     .list-group-item.active {
@@ -82,7 +97,7 @@ body {
         font-weight: 600;
     }
 
-/* Remover espaço para o logo que foi retirado */
+/* Remover espaço do logo (oculto) */
 .sidebar-heading {
     display: none;
 }
