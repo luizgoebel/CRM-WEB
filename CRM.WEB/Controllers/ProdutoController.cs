@@ -1,5 +1,6 @@
 ﻿using CRM.Web.Exceptions;
 using CRM.Web.Models;
+using CRM.Web.ServiceClient;
 using CRM.Web.ServiceClient.IServiceClient;
 using CRM.Web.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -17,12 +18,15 @@ public class ProdutoController : Controller
         _produtoServiceClient = produtoServiceClient;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
         try
         {
-            var produtos = await _produtoServiceClient.ObterTodosClientes();
-            return View(produtos);
+            const int pageSize = 25;
+            var resultado = await _produtoServiceClient.ObterProdutosPaginados(page, pageSize);
+            ViewBag.TotalPaginas = resultado.TotalPaginas;
+            ViewBag.PaginaAtual = resultado.PaginaAtual;
+            return View(resultado.Itens);
         }
         catch (DomainException ex)
         {

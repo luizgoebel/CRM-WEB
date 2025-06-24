@@ -33,6 +33,16 @@ public class ProdutoServiceClient : IProdutoServiceClient
         return produto!;
     }
 
+    public async Task<PaginacaoResultado<ProdutoViewModel>> ObterProdutosPaginados(int page, int pageSize)
+    {
+        var response = await _httpClient.GetAsync($"api/Produto/ObterProdutosPaginados?page={page}&pageSize={pageSize}");
+
+        await TrataExcecao.TratarResponseException(response);
+
+        var resultado = await response.Content.ReadFromJsonAsync<PaginacaoResultado<ProdutoViewModel>>();
+        return resultado!;
+    }
+
     public async Task<List<ProdutoViewModel>> ObterTodosClientes()
     {
         HttpResponseMessage response = await _httpClient.GetAsync("api/Produto/ObterTodosProdutos");
