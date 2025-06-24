@@ -16,21 +16,6 @@ body {
     margin-bottom: 60px;
 }
 
-/* Foco customizado para botões, inputs e links */
-.btn:focus,
-.btn:active:focus,
-.btn-link.nav-link:focus,
-.form-control:focus,
-.form-check-input:focus {
-    outline: none; /* Remove o foco padrão */
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-/* Botões com largura mínima fixa */
-.btn-igual {
-    min-width: 120px; /* ajusta conforme necessidade */
-}
-
 /* Wrapper e estrutura do sidebar + conteúdo */
 #wrapper {
     display: flex;
@@ -42,9 +27,9 @@ body {
 #sidebar-wrapper {
     width: 250px;
     min-height: 100vh;
-    transition: margin-left 0.3s ease; /* transição só no margin */
+    transition: margin-left 0.3s ease;
     overflow-y: auto;
-    margin-left: 0; /* padrão visível */
+    margin-left: 0;
 }
 
 /* Conteúdo principal */
@@ -65,16 +50,9 @@ body {
         margin-left: -250px;
     }
 
-    /* Quando toggled no mobile, sidebar aparece */
     #wrapper.toggled #sidebar-wrapper {
         margin-left: 0;
     }
-}
-
-/* Botão de toggle fica sempre acima da sidebar */
-#menu-toggle {
-    position: relative; /* garantir z-index funcione */
-    z-index: 1051;
 }
 
 /* Itens do menu: sem borda e estilos para hover/focus */
@@ -100,4 +78,43 @@ body {
 /* Remover espaço do logo (oculto) */
 .sidebar-heading {
     display: none;
+}
+
+/* Botão toggle do menu */
+
+/* Cor e fundo padrão */
+#menu-toggle {
+    position: relative; /* garantir z-index funcione */
+    z-index: 1051;
+    color: white; /* texto branco */
+    background-color: #343a40; /* bg escuro, igual ao sidebar */
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    /* Remover foco azul e contorno */
+    #menu-toggle:focus,
+    #menu-toggle:active,
+    #menu-toggle:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        background-color: #343a40 !important;
+        color: white !important;
+    }
+
+/* Botões com largura mínima fixa */
+.btn-igual {
+    min-width: 120px;
+}
+
+/* Foco customizado para botões, inputs e links */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
