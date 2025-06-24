@@ -1,0 +1,19 @@
+/* Espaçamento e borda para área da tabela */
+.card {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+/* Fixar largura mínima nas colunas e evitar quebra */
+.tabela-clientes th,
+.tabela-clientes td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* Para evitar que a tabela "quebre" com textos curtos */
+.tabela-clientes {
+    table-layout: fixed;
+    width: 100%;
+}

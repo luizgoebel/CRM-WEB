@@ -1,5 +1,4 @@
 ﻿@using CRM.Web.Models
-
 @model IEnumerable<ClienteViewModel>
 
 @{
@@ -8,49 +7,62 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<div class="d-flex justify-content-between mb-3">
-    <div>
-        <a href="javascript:void(0);" onclick="abrirModalCliente(null, false)" class="btn btn-primary">
-            Novo Cliente
-        </a>
-    </div>
-    <div>
-        <input type="text" id="searchInput" class="form-control" placeholder="Buscar..." onkeyup="filtroTabelaCliente()" />
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="javascript:void(0);" class="btn btn-primary" onclick="abrirModalCliente(null, false)">
+                <i class="bi bi-plus-circle me-1"></i> Novo Cliente
+            </a>
+
+            <div class="input-group w-auto">
+                <input type="text"
+                       id="searchInput"
+                       class="form-control"
+                       placeholder="Buscar..."
+                       onkeyup="filtroTabelaCliente()" />
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle tabela-clientes" id="tabelaClientes">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 20%;">Nome</th>
+                        <th style="width: 20%;">Email</th>
+                        <th style="width: 25%;">Endereco</th>
+                        <th style="width: 15%;">Telefone</th>
+                        <th style="width: 20%;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cliente in Model)
+                    {
+                        <tr>
+                            <td>@cliente.Nome</td>
+                            <td>@cliente.Email</td>
+                            <td>@cliente.Endereco</td>
+                            <td>@cliente.Telefone</td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-warning btn-sm me-1"
+                                        title="Editar"
+                                        onclick="abrirModalCliente(@cliente.Id, false)">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button type="button"
+                                        class="btn btn-info btn-sm"
+                                        title="Visualizar"
+                                        onclick="abrirModalCliente(@cliente.Id, true)">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
-<table class="table table-striped" id="tabelaClientes">
-    <thead>
-        <tr>
-            <th style="display:none;">ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Endereco</th>
-            <th>Telefone</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var cliente in Model)
-        {
-            <tr>
-                <td style="display:none;">@cliente.Id</td>
-                <td>@cliente.Nome</td>
-                <td>@cliente.Email</td>
-                <td>@cliente.Endereco</td>
-                <td>@cliente.Telefone</td>
-                <td>
-                    <a href="javascript:void(0);" onclick="abrirModalCliente(@cliente.Id, false)" class="btn btn-sm btn-warning" title="Editar">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    <a href="javascript:void(0);" onclick="abrirModalCliente(@cliente.Id, true)" class="btn btn-sm btn-info" title="Visualizar">
-                        <i class="bi bi-eye"></i>
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
 <!-- Modal genérico reutilizável -->
 <div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
@@ -66,4 +78,3 @@
         </div>
     </div>
 </div>
-
