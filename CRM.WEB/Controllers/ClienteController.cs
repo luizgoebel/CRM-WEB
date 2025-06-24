@@ -26,7 +26,7 @@ public class ClienteController : Controller
             var resultado = await _clienteServiceClient.ObterClientesPaginados(page, pageSize);
             ViewBag.TotalPaginas = resultado.TotalPaginas;
             ViewBag.PaginaAtual = resultado.PaginaAtual;
-            return View(resultado.Clientes);
+            return View(resultado.Itens);
         }
         catch (DomainException ex)
         {
