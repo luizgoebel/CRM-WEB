@@ -1,22 +1,135 @@
+/* ===================== Base ===================== */
+
+/* Tamanho da fonte base para responsividade */
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* Espaço inferior para conteúdo fixo como footer */
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+
+/* ===================== Estrutura do Layout ===================== */
+
+#wrapper {
+    display: flex;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+#page-content-wrapper {
+    flex: 1;
+    padding: 1rem 2rem;
+    transition: margin-left 0.3s ease;
+}
+
+/* ===================== Sidebar ===================== */
+
+#sidebar-wrapper {
+    width: 250px;
+    min-height: 100vh;
+    margin-left: 0;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease;
+}
+
+/* Sidebar recolhida */
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+}
+
+/* Sidebar recolhida por padrão no mobile */
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: -250px;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+}
+
+/* Cabeçalho da sidebar oculto */
+.sidebar-heading {
+    display: none;
+}
+
+/* ===================== Itens do Menu ===================== */
+
+.list-group-item {
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+    .list-group-item:hover,
+    .list-group-item:focus {
+        background-color: #343a40;
+        color: #ffffff;
+        outline: none;
+    }
+
+    .list-group-item.active {
+        background-color: #0d6efd;
+        color: #fff;
+        font-weight: 600;
+    }
+
+/* ===================== Botão de Menu ===================== */
+
+#menu-toggle {
+    position: relative;
+    z-index: 1051;
+    color: white;
+    background-color: #343a40;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    /* Remove contorno azul ao focar */
+    #menu-toggle:focus,
+    #menu-toggle:active,
+    #menu-toggle:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        background-color: #343a40 !important;
+        color: white !important;
+    }
+
+/* ===================== Ícone Dropdown (Seta) ===================== */
+
+.dropdown-caret {
+    transition: transform 0.3s ease;
+    color: white;
+}
+
+    .dropdown-caret.rotated {
+        transform: rotate(180deg);
+    }
+
+/* ===================== Botões Gerais ===================== */
+
+.btn-igual {
+    min-width: 120px;
+}
+
+/* Foco para botões, inputs, etc. */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }

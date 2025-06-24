@@ -7,66 +7,96 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-
-    <!-- CSS customizado do projeto -->
+    <!-- Seu CSS customizado -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/cliente.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/produto.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CRM.WEB.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <!-- Logo à esquerda -->
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">CRM WEB</a>
+    <div class="d-flex" id="wrapper">
+        <!-- Botão fixo do menu -->
+        <button class="btn btn-sm position-fixed top-0 start-0 m-2 zindex-fixed" id="menu-toggle" type="button" aria-label="Toggle menu">
+            <i class="bi bi-list fs-5"></i>
+            <span class="menu-label">Menu</span>
+        </button>
 
-                <!-- Botão menu colapsado no mobile -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <!-- Menu alinhado à direita -->
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <!-- Dropdown Cadastro -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Cadastro
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cadastroDropdown">
-                                <li><a class="dropdown-item" asp-controller="Cliente" asp-action="Index">Cliente</a></li>
-                                <li><a class="dropdown-item" href="#">Produto</a></li>
-                                <li><a class="dropdown-item" href="#">Pedido</a></li>
-                            </ul>
-                        </li>
-
-                        <!-- Links diretos -->
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Cliente" asp-action="Index">Clientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Produtos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pedidos</a>
-                        </li>
-                    </ul>
+        <!-- Sidebar -->
+        <div class="bg-dark border-end" id="sidebar-wrapper">
+            <div class="list-group list-group-flush mt-5 pt-2">
+                <a class="list-group-item list-group-item-action bg-dark text-white d-flex justify-content-between align-items-center"
+                   data-bs-toggle="collapse" href="#cadastroSubmenu" role="button" aria-expanded="false" aria-controls="cadastroSubmenu">
+                    <span><i class="bi bi-card-list me-2"></i>Acessos Rápidos</span>
+                    <i class="bi bi-caret-down-fill"></i>
+                </a>
+                <div class="collapse ps-3" id="cadastroSubmenu">
+                    <a class="list-group-item list-group-item-action bg-dark text-white" asp-controller="Cliente" asp-action="Index">
+                        <i class="bi bi-person-plus me-2"></i>Cadastrar Cliente
+                    </a>
+                    <a class="list-group-item list-group-item-action bg-dark text-white" asp-controller="Produto" asp-action="Index">
+                        <i class="bi bi-box-seam me-2"></i>Cadastrar Produto
+                    </a>
+                    <a class="list-group-item list-group-item-action bg-dark text-white" href="#">
+                        <i class="bi bi-receipt me-2"></i>Emitir Pedido
+                    </a>
                 </div>
+                <a class="list-group-item list-group-item-action bg-dark text-white" asp-controller="Cliente" asp-action="Index">
+                    <i class="bi bi-people me-2"></i>Clientes
+                </a>
+                <a class="list-group-item list-group-item-action bg-dark text-white" asp-controller="Produto" asp-action="Index">
+                    <i class="bi bi-boxes me-2"></i>Produtos
+                </a>
+                <a class="list-group-item list-group-item-action bg-dark text-white" href="#">
+                    <i class="bi bi-cart4 me-2"></i>Pedidos
+                </a>
             </div>
-        </nav>
-    </header>
+        </div>
 
-    <main role="main" class="container mt-4">
-        @RenderBody()
-    </main>
+        <!-- Conteúdo principal -->
+        <div id="page-content-wrapper">
+            <main class="container-fluid mt-4">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
 
-    <!-- Bibliotecas JS -->
+    @await Html.PartialAsync("_MensagemPartial")
+    @await Html.PartialAsync("_SpinnerPartial")
+    @await Html.PartialAsync("_confirmacaoPartial")
+
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/utils/globais.js"></script>
+    <script src="~/js/cliente/cliente.js"></script>
+    <script src="~/js/produto/produto.js"></script>
 
-    <!-- Scripts específicos por página -->
+    <script>
+        function atualizarTextoBotaoMenu() {
+            const aberto = !document.getElementById("wrapper").classList.contains("toggled");
+            document.querySelector(".menu-label").innerText = aberto ? "Menu" : "";
+        }
+
+        $("#menu-toggle").click(function () {
+            $("#wrapper").toggleClass("toggled");
+            atualizarTextoBotaoMenu();
+            this.blur(); // Remove o foco para evitar cor azul ou seleção
+        });
+
+        $(document).ready(atualizarTextoBotaoMenu);
+
+        $("#acessosRapidoSubmenu").on('shown.bs.collapse', function () {
+            $("#acessosRapidoDropdown .dropdown-caret").addClass("rotated");
+        });
+
+        $("#acessosRapidoSubmenu").on('hidden.bs.collapse', function () {
+            $("#acessosRapidoDropdown .dropdown-caret").removeClass("rotated");
+        });
+
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

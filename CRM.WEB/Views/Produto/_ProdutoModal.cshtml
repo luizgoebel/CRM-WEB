@@ -1,0 +1,26 @@
+﻿@model CRM.Web.Models.ProdutoViewModel
+@{
+    bool somenteLeitura = ViewBag.SomenteLeitura ?? false;
+}
+
+<form id="formProdutoModal" method="post" action="/Produto/SalvarProduto" draggable="false">
+    <input type="hidden" name="Id" value="@Model?.Id" />
+
+    <div class="mb-3">
+        <label for="nomeProduto" class="form-label">Nome:</label>
+        <input type="text" class="form-control" id="nomeProduto" name="Nome" value="@Model?.Nome" @(somenteLeitura ? "readonly" : "") />
+    </div>
+
+    <div class="mb-3">
+        <label for="precoProduto" class="form-label">Preço:</label>
+        <input type="number" step="0.01" class="form-control" id="precoProduto" name="Preco" value="@(Model?.Preco?.ToString(System.Globalization.CultureInfo.InvariantCulture))" @(somenteLeitura ? "readonly" : "") />
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-sm btn-danger btn-igual" data-bs-dismiss="modal">Fechar</button>
+        @if (!somenteLeitura)
+        {
+            <button type="button" class="btn btn-sm btn-success btn-igual" onclick="salvarProduto()">Salvar</button>
+        }
+    </div>
+</form>
