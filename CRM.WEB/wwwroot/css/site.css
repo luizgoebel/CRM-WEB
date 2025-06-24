@@ -83,3 +83,98 @@ body {
 
     .list-group-item.active {
         background-color: #0d6efd;
+        color: #fff;
+        font-weight: 600;
+    }
+
+/* Texto branco no menu quando aberto */
+#wrapper:not(.toggled) .list-group-item {
+    color: #fff;
+}
+
+
+/* ===================== Botão de Menu ===================== */
+
+#menu-toggle {
+    position: relative;
+    z-index: 1051;
+    color: white;
+    background-color: #343a40;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    /* Remove contorno azul ao focar */
+    #menu-toggle:focus,
+    #menu-toggle:active,
+    #menu-toggle:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        background-color: #343a40 !important;
+        color: white !important;
+    }
+
+
+/* ===================== Ícone Dropdown (Seta) ===================== */
+
+.dropdown-caret {
+    transition: transform 0.3s ease;
+    color: white;
+}
+
+    .dropdown-caret.rotated {
+        transform: rotate(180deg);
+    }
+
+
+/* ===================== Botões e Campos ===================== */
+
+/* Largura mínima igual para botões */
+.btn-igual {
+    min-width: 120px;
+}
+
+/* Foco em botões, inputs etc */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+
+/* ===================== Componentes Visuais ===================== */
+
+/* Cartão para formulários e tabelas */
+.card {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+
+/* ===================== Tabelas ===================== */
+
+/* Tabelas com layout fixo e responsivo */
+.tabela-dados {
+    table-layout: fixed;
+    width: 100%;
+}
+
+    /* Células com texto que não quebra */
+    .tabela-dados th,
+    .tabela-dados td {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+        /* Centraliza ações na última coluna */
+        .tabela-dados th:last-child,
+        .tabela-dados td:last-child {
+            text-align: center;
+            vertical-align: middle;
+        }
