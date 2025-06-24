@@ -1,10 +1,9 @@
 /* ===================== Base ===================== */
 
-/* Fonte e estrutura básica */
-html {
-    font-size: 14px;
-    position: relative;
-    min-height: 100%;
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* impede scroll geral da página */
 }
 
 @media (min-width: 768px) {
@@ -13,43 +12,38 @@ html {
     }
 }
 
-body {
-    margin-bottom: 60px; /* Espaço inferior para conteúdo fixo como footer */
-}
-
-
 /* ===================== Layout ===================== */
 
-/* Estrutura da página */
 #wrapper {
     display: flex;
     width: 100%;
-    overflow-x: hidden;
+    height: 100vh;
+    overflow: hidden; /* evita scroll geral */
 }
 
 #page-content-wrapper {
     flex: 1;
+    height: 100vh;
+    overflow: hidden; /* tira scroll aqui para forçar scroll só na tabela */
+    display: flex;
+    flex-direction: column;
     padding: 1rem 2rem;
-    transition: margin-left 0.3s ease;
 }
-
 
 /* ===================== Sidebar ===================== */
 
 #sidebar-wrapper {
     width: 250px;
-    min-height: 100vh;
+    height: 100vh;
     margin-left: 0;
     overflow-y: auto;
     transition: margin-left 0.3s ease;
 }
 
-/* Sidebar recolhida */
 #wrapper.toggled #sidebar-wrapper {
     margin-left: -250px;
 }
 
-/* Sidebar recolhida por padrão no mobile */
 @media (max-width: 768px) {
     #sidebar-wrapper {
         margin-left: -250px;
@@ -60,11 +54,9 @@ body {
     }
 }
 
-/* Cabeçalho da sidebar oculto */
 .sidebar-heading {
     display: none;
 }
-
 
 /* ===================== Menu Lateral ===================== */
 
@@ -87,11 +79,9 @@ body {
         font-weight: 600;
     }
 
-/* Texto branco no menu quando aberto */
 #wrapper:not(.toggled) .list-group-item {
     color: #fff;
 }
-
 
 /* ===================== Botão de Menu ===================== */
 
@@ -106,7 +96,6 @@ body {
     gap: 0.5rem;
 }
 
-    /* Remove contorno azul ao focar */
     #menu-toggle:focus,
     #menu-toggle:active,
     #menu-toggle:focus-visible {
@@ -115,7 +104,6 @@ body {
         background-color: #343a40 !important;
         color: white !important;
     }
-
 
 /* ===================== Ícone Dropdown (Seta) ===================== */
 
@@ -128,15 +116,12 @@ body {
         transform: rotate(180deg);
     }
 
-
 /* ===================== Botões e Campos ===================== */
 
-/* Largura mínima igual para botões */
 .btn-igual {
     min-width: 120px;
 }
 
-/* Foco em botões, inputs etc */
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
@@ -146,25 +131,21 @@ body {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-
 /* ===================== Componentes Visuais ===================== */
 
-/* Cartão para formulários e tabelas */
 .card {
     border-radius: 8px;
     border: 1px solid #dee2e6;
 }
 
-
 /* ===================== Tabelas ===================== */
 
-/* Tabelas com layout fixo e responsivo */
 .tabela-dados {
     table-layout: fixed;
     width: 100%;
+    border-collapse: collapse;
 }
 
-    /* Células com texto que não quebra */
     .tabela-dados th,
     .tabela-dados td {
         white-space: nowrap;
@@ -172,16 +153,37 @@ body {
         overflow: hidden;
     }
 
-        /* Centraliza ações na última coluna */
         .tabela-dados th:last-child,
         .tabela-dados td:last-child {
             text-align: center;
             vertical-align: middle;
         }
 
+/* Container da tabela com scroll só nos dados */
+.tabela-container {
+    height: calc(100vh - 250px); /* ajuste conforme seu layout */
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-responsive {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+    .table-responsive thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa;
+        z-index: 10;
+        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+    }
+
+
+
 /* ===================== Popups Customizados ===================== */
 
-/* Estrutura base dos popups */
 #popupMensagemWrapper,
 #popupConfirmacaoWrapper {
     z-index: 9999;
@@ -195,7 +197,6 @@ body {
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
 }
 
-/* Conteúdo interno dos popups */
 #popupMensagemConteudo.alert,
 #popupConfirmacaoConteudo.alert {
     background-color: transparent !important;
@@ -207,6 +208,7 @@ body {
 }
 
 /* ===================== Spinner Global ===================== */
+
 #spinnerGlobal {
     z-index: 9999;
     display: none;
@@ -216,5 +218,3 @@ body {
         width: 3rem;
         height: 3rem;
     }
-
-
