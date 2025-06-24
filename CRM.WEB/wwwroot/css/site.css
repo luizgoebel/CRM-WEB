@@ -1,4 +1,6 @@
-/* Base font size para desktop e mobile */
+/* ===================== Base ===================== */
+
+/* Tamanho da fonte base para responsividade */
 html {
     font-size: 14px;
     position: relative;
@@ -11,40 +13,41 @@ html {
     }
 }
 
-/* Body com espaço inferior para footer ou algo fixo */
+/* Espaço inferior para conteúdo fixo como footer */
 body {
     margin-bottom: 60px;
 }
 
-/* Wrapper e estrutura do sidebar + conteúdo */
+/* ===================== Estrutura do Layout ===================== */
+
 #wrapper {
     display: flex;
     width: 100%;
     overflow-x: hidden;
 }
 
-/* Sidebar */
-#sidebar-wrapper {
-    width: 250px;
-    min-height: 100vh;
-    transition: margin-left 0.3s ease;
-    overflow-y: auto;
-    margin-left: 0;
-}
-
-/* Conteúdo principal */
 #page-content-wrapper {
     flex: 1;
     padding: 1rem 2rem;
     transition: margin-left 0.3s ease;
 }
 
-/* Sidebar recolhida - aplica margin-left negativo */
+/* ===================== Sidebar ===================== */
+
+#sidebar-wrapper {
+    width: 250px;
+    min-height: 100vh;
+    margin-left: 0;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease;
+}
+
+/* Sidebar recolhida */
 #wrapper.toggled #sidebar-wrapper {
     margin-left: -250px;
 }
 
-/* Para responsividade: sidebar recolhida por padrão no mobile */
+/* Sidebar recolhida por padrão no mobile */
 @media (max-width: 768px) {
     #sidebar-wrapper {
         margin-left: -250px;
@@ -55,7 +58,13 @@ body {
     }
 }
 
-/* Itens do menu: sem borda e estilos para hover/focus */
+/* Cabeçalho da sidebar oculto */
+.sidebar-heading {
+    display: none;
+}
+
+/* ===================== Itens do Menu ===================== */
+
 .list-group-item {
     border: none;
     cursor: pointer;
@@ -75,26 +84,20 @@ body {
         font-weight: 600;
     }
 
-/* Remover espaço do logo (oculto) */
-.sidebar-heading {
-    display: none;
-}
+/* ===================== Botão de Menu ===================== */
 
-/* Botão toggle do menu */
-
-/* Cor e fundo padrão */
 #menu-toggle {
-    position: relative; /* garantir z-index funcione */
+    position: relative;
     z-index: 1051;
-    color: white; /* texto branco */
-    background-color: #343a40; /* bg escuro, igual ao sidebar */
+    color: white;
+    background-color: #343a40;
     border: none;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-    /* Remover foco azul e contorno */
+    /* Remove contorno azul ao focar */
     #menu-toggle:focus,
     #menu-toggle:active,
     #menu-toggle:focus-visible {
@@ -104,12 +107,24 @@ body {
         color: white !important;
     }
 
-/* Botões com largura mínima fixa */
+/* ===================== Ícone Dropdown (Seta) ===================== */
+
+.dropdown-caret {
+    transition: transform 0.3s ease;
+    color: white;
+}
+
+    .dropdown-caret.rotated {
+        transform: rotate(180deg);
+    }
+
+/* ===================== Botões Gerais ===================== */
+
 .btn-igual {
     min-width: 120px;
 }
 
-/* Foco customizado para botões, inputs e links */
+/* Foco para botões, inputs, etc. */
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,

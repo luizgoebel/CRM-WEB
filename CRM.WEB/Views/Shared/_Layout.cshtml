@@ -12,7 +12,6 @@
     <!-- Seu CSS customizado -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CRM.WEB.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/custom-sidebar.css" asp-append-version="true" />
 </head>
 <body>
     <div class="d-flex" id="wrapper">
@@ -85,6 +84,15 @@
         });
 
         $(document).ready(atualizarTextoBotaoMenu);
+
+        $("#acessosRapidoSubmenu").on('shown.bs.collapse', function () {
+            $("#acessosRapidoDropdown .dropdown-caret").addClass("rotated");
+        });
+
+        $("#acessosRapidoSubmenu").on('hidden.bs.collapse', function () {
+            $("#acessosRapidoDropdown .dropdown-caret").removeClass("rotated");
+        });
+
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
