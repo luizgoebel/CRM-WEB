@@ -45,5 +45,16 @@ function confirmarAcao(mensagem, callback) {
         if (typeof callback === 'function') callback(false);
     });
 }
+function filtrarTabela(inputId, tabelaId) {
+    const input = document.getElementById(inputId);
+    const filtro = input.value.toLowerCase();
+    const linhas = document.querySelectorAll(`#${tabelaId} tbody tr`);
+
+    linhas.forEach(tr => {
+        const texto = tr.textContent.toLowerCase();
+        tr.style.display = texto.includes(filtro) ? "" : "none";
+    });
+}
+
 
 

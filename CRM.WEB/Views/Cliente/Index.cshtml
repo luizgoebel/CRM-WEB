@@ -22,11 +22,13 @@
             </a>
 
             <div class="input-group w-auto">
-                <input type="text"
-                       id="searchInput"
-                       class="form-control"
-                       placeholder="Buscar..."
-                       onkeyup="filtroTabelaCliente()" />
+                <div class="input-group w-auto">
+                    <input type="text"
+                           id="searchClienteInput"
+                           class="form-control"
+                           placeholder="Buscar..."
+                           onkeyup="filtrarTabela('searchClienteInput', 'tabelaClientes')" />
+                </div>
             </div>
         </div>
 
