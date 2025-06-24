@@ -5,22 +5,22 @@
 }
 
 /* Tabela com layout fixo e responsiva */
-.tabela-clientes {
+.tabela-produtos {
     table-layout: fixed;
     width: 100%;
 }
 
     /* Células com texto que não quebra */
-    .tabela-clientes th,
-    .tabela-clientes td {
+    .tabela-produtos th,
+    .tabela-produtos td {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
     }
 
-        /* Centraliza ações na tabela de clientes */
-        .tabela-clientes th:last-child,
-        .tabela-clientes td:last-child {
+        /* Centraliza ações na tabela de produtos */
+        .tabela-produtos th:last-child,
+        .tabela-produtos td:last-child {
             text-align: center;
             vertical-align: middle;
         }
