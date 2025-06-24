@@ -72,34 +72,8 @@
         </div>
 
         <!-- Paginação -->
-        <nav aria-label="Navegação de páginas" class="mt-3">
-            <ul class="pagination justify-content-end">
-                @if (paginaAtual > 1)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?page=@(paginaAtual - 1)" aria-label="Anterior">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                }
+        @await Html.PartialAsync("_Paginacao", (paginaAtual, totalPaginas))
 
-                @for (int i = inicioGrupo; i <= fimGrupo; i++)
-                {
-                    <li class="page-item @(paginaAtual == i ? "active" : "")">
-                        <a class="page-link" href="?page=@i">@i</a>
-                    </li>
-                }
-
-                @if (fimGrupo < totalPaginas)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?page=@(fimGrupo + 1)" aria-label="Próximo grupo">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </nav>
     </div>
 </div>
 
