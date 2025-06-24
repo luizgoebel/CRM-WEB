@@ -211,3 +211,10 @@ body {
     z-index: 9999;
     display: none;
 }
+
+    #spinnerGlobal .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+
+
