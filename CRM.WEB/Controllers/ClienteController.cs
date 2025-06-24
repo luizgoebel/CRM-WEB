@@ -18,12 +18,15 @@ public class ClienteController : Controller
         _clienteServiceClient = clienteServiceClient;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
         try
         {
-            List<ClienteViewModel> clientes = await _clienteServiceClient.ObterTodosClientes();
-            return View(clientes);
+            const int pageSize = 15;
+            var resultado = await _clienteServiceClient.ObterClientesPaginados(page, pageSize);
+            ViewBag.TotalPaginas = resultado.TotalPaginas;
+            ViewBag.PaginaAtual = resultado.PaginaAtual;
+            return View(resultado.Clientes);
         }
         catch (DomainException ex)
         {
@@ -34,6 +37,7 @@ public class ClienteController : Controller
             return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
         }
     }
+
 
     public async Task<IActionResult> ClienteModal(int? id, bool somenteVisualizacao = false)
     {

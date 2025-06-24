@@ -3,6 +3,13 @@
 
 @{
     ViewData["Title"] = "Clientes";
+    var paginaAtual = ViewBag.PaginaAtual as int? ?? 1;
+    var totalPaginas = ViewBag.TotalPaginas as int? ?? 1;
+
+    int paginasPorGrupo = 5;
+    int grupoAtual = (paginaAtual - 1) / paginasPorGrupo;
+    int inicioGrupo = grupoAtual * paginasPorGrupo + 1;
+    int fimGrupo = Math.Min(inicioGrupo + paginasPorGrupo - 1, totalPaginas);
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -61,6 +68,36 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Paginação -->
+        <nav aria-label="Navegação de páginas" class="mt-3">
+            <ul class="pagination justify-content-end">
+                @if (paginaAtual > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(paginaAtual - 1)" aria-label="Anterior">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+
+                @for (int i = inicioGrupo; i <= fimGrupo; i++)
+                {
+                    <li class="page-item @(paginaAtual == i ? "active" : "")">
+                        <a class="page-link" href="?page=@i">@i</a>
+                    </li>
+                }
+
+                @if (fimGrupo < totalPaginas)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(fimGrupo + 1)" aria-label="Próximo grupo">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
 </div>
 

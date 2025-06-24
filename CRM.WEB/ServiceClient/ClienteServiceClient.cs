@@ -37,6 +37,17 @@ public class ClienteServiceClient : IClienteServiceClient
         return clientes ?? new List<ClienteViewModel>();
     }
 
+    public async Task<PaginacaoResultado<ClienteViewModel>> ObterClientesPaginados(int page, int pageSize)
+    {
+        var response = await _httpClient.GetAsync($"api/Cliente/ObterClientesPaginados?page={page}&pageSize={pageSize}");
+
+        await TrataExcecao.TratarResponseException(response);
+
+        var resultado = await response.Content.ReadFromJsonAsync<PaginacaoResultado<ClienteViewModel>>();
+        return resultado!;
+    }
+
+
     public async Task SalvarCliente(ClienteViewModel clienteViewModel)
     {
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Cliente/SalvarCliente", clienteViewModel);
