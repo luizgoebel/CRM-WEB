@@ -22,7 +22,7 @@ public class ClienteController : Controller
     {
         try
         {
-            const int pageSize = 15;
+            const int pageSize = 25;
             var resultado = await _clienteServiceClient.ObterClientesPaginados(page, pageSize);
             ViewBag.TotalPaginas = resultado.TotalPaginas;
             ViewBag.PaginaAtual = resultado.PaginaAtual;

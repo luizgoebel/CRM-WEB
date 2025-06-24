@@ -140,47 +140,43 @@ html, body {
 
 /* ===================== Tabelas ===================== */
 
-.tabela-dados {
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse;
+/* Container da tabela com scroll na tabela toda (header + linhas) */
+.tabela-container {
+    height: calc(100vh - 250px); /* ajuste conforme seu layout */
+    overflow-y: auto; /* scroll na tabela toda */
 }
 
+/* Tabela */
+.tabela-dados {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+    /* Altura e padding das linhas - ajuste aqui se precisar */
     .tabela-dados th,
     .tabela-dados td {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        height: 32px; /* Altura fixa da linha */
+        line-height: 32px; /* Alinhamento vertical */
+        padding: 0 8px; /* Espaçamento horizontal */
     }
 
+        /* Alinhamento do último td/th */
         .tabela-dados th:last-child,
         .tabela-dados td:last-child {
             text-align: center;
             vertical-align: middle;
         }
 
-/* Container da tabela com scroll só nos dados */
-.tabela-container {
-    height: calc(100vh - 250px); /* ajuste conforme seu layout */
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-}
-
-.table-responsive {
-    overflow-y: auto;
-    flex-grow: 1;
-}
-
-    .table-responsive thead th {
-        position: sticky;
-        top: 0;
+    /* Estilo do header (não fixo pois o scroll é na tabela toda) */
+    .tabela-dados thead th {
+        position: static;
         background-color: #f8f9fa;
-        z-index: 10;
-        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+        border-bottom: 2px solid #dee2e6;
     }
-
-
 
 /* ===================== Popups Customizados ===================== */
 
