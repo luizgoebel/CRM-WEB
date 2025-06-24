@@ -1,20 +1,20 @@
-﻿<div id="popupConfirmacaoWrapper" class="position-fixed top-50 start-50 translate-middle bg-white border rounded shadow p-4"
-     style="z-index: 9999; display: none; max-width: 450px; width: 90%;">
-    <div class="d-flex justify-content-between align-items-center mb-0">
+﻿<div id="popupConfirmacaoWrapper" class="position-fixed top-50 start-50 translate-middle bg-white shadow p-4">
+
+    <!-- Cabeçalho -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="m-0 text-dark">Confirmação</h5>
         <button id="btnFecharPopupConfirmacaoTopo" type="button" class="btn-close" aria-label="Fechar"></button>
     </div>
 
-    <hr style="margin: 0.5rem 0 1rem 0; border: 0; border-top: 1px solid #dee2e6;" />
+    <hr class="my-2" />
 
-    <div id="popupConfirmacaoConteudo" class="alert mb-0 text-start"
-         style="background-color: transparent; color: #000; font-size: 14px; padding: 0; border: none;">
+    <!-- Mensagem de confirmação -->
+    <div id="popupConfirmacaoConteudo" class="alert mb-0 text-start">
         Deseja confirmar esta ação?
     </div>
 
-    <div style="margin-top: 2rem;"></div>
-
-    <div class="text-center d-flex justify-content-center gap-3">
+    <!-- Espaço e botões -->
+    <div class="mt-4 d-flex justify-content-center gap-3">
         <button id="btnConfirmarSim" class="btn btn-success px-4">Sim</button>
         <button id="btnConfirmarNao" class="btn btn-secondary px-4">Não</button>
     </div>

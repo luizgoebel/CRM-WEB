@@ -1,33 +1,19 @@
-﻿<style>
-    #popupMensagemConteudo.alert {
-        background-color: transparent !important; /* remove background */
-        color: #000 !important; /* texto preto */
-        font-size: 14px !important; /* tamanho 14px */
-        padding: 0; /* remover padding padrão do alert */
-        border: none; /* remover borda */
-    }
-</style>
+﻿<div id="popupMensagemWrapper" class="position-fixed top-50 start-50 translate-middle bg-white shadow p-4">
 
-<div id="popupMensagemWrapper" class="position-fixed top-50 start-50 translate-middle bg-white border rounded shadow p-4"
-     style="z-index: 9999; display: none; max-width: 450px; width: 90%;">
-
-    <!-- Título e botão fechar -->
-    <div class="d-flex justify-content-between align-items-center mb-0">
+    <!-- Cabeçalho -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="m-0 text-dark">Informação</h5>
         <button id="btnFecharPopupTopo" type="button" class="btn-close" aria-label="Fechar"></button>
     </div>
 
-    <!-- Linha separadora -->
-    <hr style="margin: 0.5rem 0 1rem 0; border: 0; border-top: 1px solid #dee2e6;" />
+    <hr class="my-2" />
 
-    <!-- Conteúdo da mensagem -->
-    <div id="popupMensagemConteudo" class="alert mb-0 text-start">Nome do cliente é obrigatório.</div>
+    <!-- Mensagem -->
+    <div id="popupMensagemConteudo" class="alert mb-0 text-start">
+    </div>
 
-    <!-- Espaço maior entre texto e botão -->
-    <div style="margin-top: 2rem;"></div>
-
-    <!-- Botão fechar (embaixo) -->
-    <div class="text-center">
+    <!-- Espaço entre texto e botão -->
+    <div class="mt-4 text-center">
         <button id="btnFecharPopup" class="btn btn-primary px-4">Fechar</button>
     </div>
 </div>
