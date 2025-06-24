@@ -1,6 +1,6 @@
 /* ===================== Base ===================== */
 
-/* Tamanho da fonte base para responsividade */
+/* Fonte e estrutura básica */
 html {
     font-size: 14px;
     position: relative;
@@ -13,13 +13,14 @@ html {
     }
 }
 
-/* Espaço inferior para conteúdo fixo como footer */
 body {
-    margin-bottom: 60px;
+    margin-bottom: 60px; /* Espaço inferior para conteúdo fixo como footer */
 }
 
-/* ===================== Estrutura do Layout ===================== */
 
+/* ===================== Layout ===================== */
+
+/* Estrutura da página */
 #wrapper {
     display: flex;
     width: 100%;
@@ -31,6 +32,7 @@ body {
     padding: 1rem 2rem;
     transition: margin-left 0.3s ease;
 }
+
 
 /* ===================== Sidebar ===================== */
 
@@ -63,7 +65,8 @@ body {
     display: none;
 }
 
-/* ===================== Itens do Menu ===================== */
+
+/* ===================== Menu Lateral ===================== */
 
 .list-group-item {
     border: none;
@@ -80,56 +83,3 @@ body {
 
     .list-group-item.active {
         background-color: #0d6efd;
-        color: #fff;
-        font-weight: 600;
-    }
-
-/* ===================== Botão de Menu ===================== */
-
-#menu-toggle {
-    position: relative;
-    z-index: 1051;
-    color: white;
-    background-color: #343a40;
-    border: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-    /* Remove contorno azul ao focar */
-    #menu-toggle:focus,
-    #menu-toggle:active,
-    #menu-toggle:focus-visible {
-        outline: none !important;
-        box-shadow: none !important;
-        background-color: #343a40 !important;
-        color: white !important;
-    }
-
-/* ===================== Ícone Dropdown (Seta) ===================== */
-
-.dropdown-caret {
-    transition: transform 0.3s ease;
-    color: white;
-}
-
-    .dropdown-caret.rotated {
-        transform: rotate(180deg);
-    }
-
-/* ===================== Botões Gerais ===================== */
-
-.btn-igual {
-    min-width: 120px;
-}
-
-/* Foco para botões, inputs, etc. */
-.btn:focus,
-.btn:active:focus,
-.btn-link.nav-link:focus,
-.form-control:focus,
-.form-check-input:focus {
-    outline: none;
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
