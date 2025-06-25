@@ -1,15 +1,12 @@
 ﻿@using CRM.Web.Models
+@using CRM.Web.TagHelpers
 @model IEnumerable<ProdutoViewModel>
 
 @{
     ViewData["Title"] = "Produtos";
     var paginaAtual = ViewBag.PaginaAtual as int? ?? 1;
     var totalPaginas = ViewBag.TotalPaginas as int? ?? 1;
-
-    int paginasPorGrupo = 5;
-    int grupoAtual = (paginaAtual - 1) / paginasPorGrupo;
-    int inicioGrupo = grupoAtual * paginasPorGrupo + 1;
-    int fimGrupo = Math.Min(inicioGrupo + paginasPorGrupo - 1, totalPaginas);
+    var (inicioGrupo, fimGrupo) = PaginacaoHelper.CalcularIntervalo(paginaAtual, totalPaginas);
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -71,7 +68,8 @@
         </div>
 
         <!-- Paginação -->
-        @await Html.PartialAsync("_Paginacao", (paginaAtual, totalPaginas))
+        @await Html.PartialAsync("_Paginacao", (paginaAtual, totalPaginas, inicioGrupo, fimGrupo));
+
     </div>
 </div>
 

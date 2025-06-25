@@ -1,11 +1,4 @@
-﻿@model (int paginaAtual, int totalPaginas)
-
-@{
-    int paginasPorGrupo = 5;
-    int grupoAtual = (Model.paginaAtual - 1) / paginasPorGrupo;
-    int inicioGrupo = grupoAtual * paginasPorGrupo + 1;
-    int fimGrupo = Math.Min(inicioGrupo + paginasPorGrupo - 1, Model.totalPaginas);
-}
+﻿@model (int paginaAtual, int totalPaginas, int inicioGrupo, int fimGrupo)
 
 <nav aria-label="Navegação de páginas" class="mt-3">
     <ul class="pagination justify-content-end">
@@ -18,17 +11,17 @@
             </li>
         }
 
-        @for (int i = inicioGrupo; i <= fimGrupo; i++)
+        @for (int i = Model.inicioGrupo; i <= Model.fimGrupo; i++)
         {
             <li class="page-item @(Model.paginaAtual == i ? "active" : "")">
                 <a class="page-link" href="?page=@i">@i</a>
             </li>
         }
 
-        @if (fimGrupo < Model.totalPaginas)
+        @if (Model.fimGrupo < Model.totalPaginas)
         {
             <li class="page-item">
-                <a class="page-link" href="?page=@(fimGrupo + 1)" aria-label="Próximo grupo">
+                <a class="page-link" href="?page=@(Model.fimGrupo + 1)" aria-label="Próximo grupo">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
