@@ -36,6 +36,9 @@ html, body {
     overflow-y: auto;
     transition: margin-left 0.3s ease;
 }
+    #sidebar-wrapper .mt-5 {
+        margin-top: 0rem !important;
+    }
 
 #wrapper.toggled #sidebar-wrapper {
     margin-left: -250px;
@@ -131,9 +134,11 @@ nav.navbar.fixed-top {
 
 /* ===================== Tabelas ===================== */
 .tabela-container {
-    height: calc(100vh - 250px);
+    height: calc(100vh - 300px); /* aumentei para garantir espaço extra para paginação e título */
     overflow-y: auto;
+    margin-bottom: 1rem; /* espaço para a paginação */
 }
+
 
 .tabela-dados {
     width: 100%;
