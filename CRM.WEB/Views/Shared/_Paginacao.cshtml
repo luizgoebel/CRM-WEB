@@ -1,27 +1,28 @@
-﻿@model (int paginaAtual, int totalPaginas, int inicioGrupo, int fimGrupo)
+﻿@using CRM.Web.Models
+@model PaginacaoViewModel
 
 <nav aria-label="Navegação de páginas" class="mt-3">
     <ul class="pagination justify-content-end">
-        @if (Model.paginaAtual > 1)
+        @if (Model.PaginaAtual > 1)
         {
             <li class="page-item">
-                <a class="page-link" href="?page=@(Model.paginaAtual - 1)" aria-label="Anterior">
+                <a class="page-link" href="?page=@(Model.PaginaAtual - 1)" aria-label="Anterior">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
         }
 
-        @for (int i = Model.inicioGrupo; i <= Model.fimGrupo; i++)
+        @for (int i = Model.InicioGrupo; i <= Model.FimGrupo; i++)
         {
-            <li class="page-item @(Model.paginaAtual == i ? "active" : "")">
+            <li class="page-item @(Model.PaginaAtual == i ? "active" : "")">
                 <a class="page-link" href="?page=@i">@i</a>
             </li>
         }
 
-        @if (Model.fimGrupo < Model.totalPaginas)
+        @if (Model.FimGrupo < Model.TotalPaginas)
         {
             <li class="page-item">
-                <a class="page-link" href="?page=@(Model.fimGrupo + 1)" aria-label="Próximo grupo">
+                <a class="page-link" href="?page=@(Model.FimGrupo + 1)" aria-label="Próximo grupo">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

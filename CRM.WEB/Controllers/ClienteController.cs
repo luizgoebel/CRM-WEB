@@ -24,10 +24,17 @@ public class ClienteController : Controller
         {
             const int pageSize = 25;
             var resultado = await _clienteServiceClient.ObterClientesPaginados(page, pageSize);
-            ViewBag.PaginaAtual = resultado.PaginaAtual;
-            ViewBag.TotalPaginas = resultado.TotalPaginas;
+            var clienteIndexViewModel = new ClienteIndexViewModel
+            {
+                Itens = resultado.Itens,
+                Paginacao = new PaginacaoViewModel
+                {
+                    PaginaAtual = resultado.PaginaAtual,
+                    TotalPaginas = resultado.TotalPaginas
+                }
+            };
 
-            return View(resultado.Itens);
+            return View(clienteIndexViewModel);
         }
         catch (DomainException ex)
         {

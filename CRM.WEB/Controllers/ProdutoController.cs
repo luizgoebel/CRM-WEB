@@ -24,10 +24,17 @@ public class ProdutoController : Controller
         {
             const int pageSize = 25;
             var resultado = await _produtoServiceClient.ObterProdutosPaginados(page, pageSize);
-            ViewBag.PaginaAtual = resultado.PaginaAtual;
-            ViewBag.TotalPaginas = resultado.TotalPaginas;
+            var produtoIndexViewModel = new ProdutoIndexViewModel
+            {
+                Itens = resultado.Itens,
+                Paginacao = new PaginacaoViewModel
+                {
+                    PaginaAtual = resultado.PaginaAtual,
+                    TotalPaginas = resultado.TotalPaginas
+                }
+            };
 
-            return View(resultado.Itens);
+            return View(produtoIndexViewModel);
         }
         catch (DomainException ex)
         {
