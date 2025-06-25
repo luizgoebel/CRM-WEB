@@ -1,9 +1,8 @@
 /* ===================== Base ===================== */
-
 html, body {
     height: 100%;
     margin: 0;
-    overflow: hidden; /* impede scroll geral da página */
+    overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -13,25 +12,23 @@ html, body {
 }
 
 /* ===================== Layout ===================== */
-
 #wrapper {
     display: flex;
     width: 100%;
     height: 100vh;
-    overflow: hidden; /* evita scroll geral */
+    overflow: hidden;
 }
 
 #page-content-wrapper {
     flex: 1;
     height: 100vh;
-    overflow: hidden; /* tira scroll aqui para forçar scroll só na tabela */
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding: 1rem 2rem;
+    padding: 4rem 2rem 1rem 2rem; /* top 4rem por causa da navbar */
 }
 
 /* ===================== Sidebar ===================== */
-
 #sidebar-wrapper {
     width: 250px;
     height: 100vh;
@@ -59,7 +56,6 @@ html, body {
 }
 
 /* ===================== Menu Lateral ===================== */
-
 .list-group-item {
     border: none;
     cursor: pointer;
@@ -83,30 +79,27 @@ html, body {
     color: #fff;
 }
 
-/* ===================== Botão de Menu ===================== */
+/* ===================== Navbar ===================== */
+nav.navbar.fixed-top {
+    height: 3.5rem;
+    z-index: 1060;
+}
 
+.pt-navbar {
+    padding-top: 3.5rem;
+}
+
+/* ===================== Botão de Menu ===================== */
 #menu-toggle {
-    position: relative;
-    z-index: 1051;
-    color: white;
-    background-color: #343a40;
-    border: none;
+    z-index: 1061;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
 }
 
-    #menu-toggle:focus,
-    #menu-toggle:active,
-    #menu-toggle:focus-visible {
-        outline: none !important;
-        box-shadow: none !important;
-        background-color: #343a40 !important;
-        color: white !important;
-    }
-
 /* ===================== Ícone Dropdown (Seta) ===================== */
-
 .dropdown-caret {
     transition: transform 0.3s ease;
     color: white;
@@ -117,7 +110,6 @@ html, body {
     }
 
 /* ===================== Botões e Campos ===================== */
-
 .btn-igual {
     min-width: 120px;
 }
@@ -132,46 +124,39 @@ html, body {
 }
 
 /* ===================== Componentes Visuais ===================== */
-
 .card {
     border-radius: 8px;
     border: 1px solid #dee2e6;
 }
 
 /* ===================== Tabelas ===================== */
-
-/* Container da tabela com scroll na tabela toda (header + linhas) */
 .tabela-container {
-    height: calc(100vh - 250px); /* ajuste conforme seu layout */
-    overflow-y: auto; /* scroll na tabela toda */
+    height: calc(100vh - 250px);
+    overflow-y: auto;
 }
 
-/* Tabela */
 .tabela-dados {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
 }
 
-    /* Altura e padding das linhas - ajuste aqui se precisar */
     .tabela-dados th,
     .tabela-dados td {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
-        height: 32px; /* Altura fixa da linha */
-        line-height: 32px; /* Alinhamento vertical */
-        padding: 0 8px; /* Espaçamento horizontal */
+        height: 32px;
+        line-height: 32px;
+        padding: 0 8px;
     }
 
-        /* Alinhamento do último td/th */
         .tabela-dados th:last-child,
         .tabela-dados td:last-child {
             text-align: center;
             vertical-align: middle;
         }
 
-    /* Estilo do header (não fixo pois o scroll é na tabela toda) */
     .tabela-dados thead th {
         position: static;
         background-color: #f8f9fa;
@@ -179,7 +164,6 @@ html, body {
     }
 
 /* ===================== Popups Customizados ===================== */
-
 #popupMensagemWrapper,
 #popupConfirmacaoWrapper {
     z-index: 9999;
@@ -204,7 +188,6 @@ html, body {
 }
 
 /* ===================== Spinner Global ===================== */
-
 #spinnerGlobal {
     z-index: 9999;
     display: none;
