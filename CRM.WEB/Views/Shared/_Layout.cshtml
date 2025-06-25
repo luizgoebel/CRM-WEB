@@ -43,14 +43,14 @@
                     <i class="bi bi-caret-down-fill"></i>
                 </a>
                 <div class="collapse ps-3" id="cadastroSubmenu">
-                    <a class="list-group-item list-group-item-action bg-dark text-white" asp-controller="Cliente" asp-action="Index">
-                        <i class="bi bi-person-plus me-2"></i>Cadastrar Cliente
+                    <a class="list-group-item list-group-item-action bg-dark text-white" onclick="abrirModalCliente(null, false)">
+                        <i class="bi bi-person-plus me-2"></i>Novo Cliente
                     </a>
-                    <a class="list-group-item list-group-item-action bg-dark text-white" asp-controller="Produto" asp-action="Index">
-                        <i class="bi bi-box-seam me-2"></i>Cadastrar Produto
+                    <a class="list-group-item list-group-item-action bg-dark text-white" onclick="abrirModalProduto(null, false)">
+                        <i class="bi bi-box-seam me-2"></i>Novo Produto
                     </a>
                     <a class="list-group-item list-group-item-action bg-dark text-white" href="#">
-                        <i class="bi bi-receipt me-2"></i>Emitir Pedido
+                        <i class="bi bi-receipt me-2"></i>Novo Pedido
                     </a>
                 </div>
                 <a class="list-group-item list-group-item-action bg-dark text-white" asp-controller="Cliente" asp-action="Index">
@@ -76,6 +76,9 @@
     @await Html.PartialAsync("_MensagemPartial")
     @await Html.PartialAsync("_SpinnerPartial")
     @await Html.PartialAsync("_confirmacaoPartial")
+    <!-- Modal genérico (idModal, titulo,bodyId) -->
+    @await Html.PartialAsync("_ModalGenerico", ("clienteModal", "Cadastrar Cliente", "clienteModalBody"))
+    @await Html.PartialAsync("_ModalGenerico", ("produtoModal", "Cadastrar Produto", "produtoModalBody"))
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
