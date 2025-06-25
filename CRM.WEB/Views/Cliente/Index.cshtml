@@ -20,16 +20,8 @@
             <a href="javascript:void(0);" class="btn btn-primary" onclick="abrirModalCliente(null, false)">
                 <i class="bi bi-plus-circle me-1"></i> Novo Cliente
             </a>
-
-            <div class="input-group w-auto">
-                <div class="input-group w-auto">
-                    <input type="text"
-                           id="searchClienteInput"
-                           class="form-control"
-                           placeholder="Buscar..."
-                           onkeyup="filtrarTabela('searchClienteInput', 'tabelaClientes')" />
-                </div>
-            </div>
+            @* Insere filtro para tabela *@
+            <filtro-tabela tabela-id="tabelaClientes" />
         </div>
 
         <div class="tabela-container d-flex flex-column">
