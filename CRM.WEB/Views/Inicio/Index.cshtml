@@ -2,11 +2,85 @@
     ViewData["Title"] = "Página Inicial";
 }
 
-<div class="container mt-4">
-    <div class="row">
+<div class="container-fluid pt-navbar">
+    <div class="row mb-4">
         <div class="col-12">
-            <h1 class="display-4">Bem-vindo ao CRM Web</h1>
-            <p class="lead">Este é o seu projeto web utilizando ASP.NET Core MVC com Bootstrap 5.</p>
+            <h1 class="display-6 fw-bold">Bem-vindo ao <span class="text-primary">CRM Web</span></h1>
+            <p class="text-muted">Acompanhe os principais indicadores do sistema abaixo.</p>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <!-- Cards de indicadores -->
+        <div class="col-md-4">
+            <div class="card text-bg-primary shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Clientes Ativos</h5>
+                    <p class="fs-3 fw-semibold">1.250</p>
+                    <p class="mb-0">Última atualização: hoje</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-success shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Produtos no Estoque</h5>
+                    <p class="fs-3 fw-semibold">3.764</p>
+                    <p class="mb-0">Estoque atualizado</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-warning shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Pedidos do Dia</h5>
+                    <p class="fs-3 fw-semibold">128</p>
+                    <p class="mb-0">Incluindo vendas pendentes</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const labels = @Html.Raw(Json.Serialize(new[] { "19/06", "20/06", "21/06", "22/06", "23/06", "24/06", "25/06" }));
+
+        const vendasData = {
+            labels: labels,
+            datasets: [{
+                label: 'Vendas',
+                data: @Html.Raw(Json.Serialize(new[] { 56, 94, 56, 92, 30, 38, 37 })),
+                borderColor: 'rgba(13, 110, 253, 1)',
+                backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                fill: true,
+                tension: 0.4
+            }]
+        };
+
+        const estoqueData = {
+            labels: labels,
+            datasets: [{
+                label: 'Estoque',
+                data: @Html.Raw(Json.Serialize(new[] { 121, 98, 148, 142, 65, 86, 138 })),
+                borderColor: 'rgba(25, 135, 84, 1)',
+                backgroundColor: 'rgba(25, 135, 84, 0.2)',
+                fill: true,
+                tension: 0.4
+            }]
+        };
+
+        new Chart(document.getElementById('vendasChart'), {
+            type: 'line',
+            data: vendasData,
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        new Chart(document.getElementById('estoqueChart'), {
+            type: 'line',
+            data: estoqueData,
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    </script>
+}
