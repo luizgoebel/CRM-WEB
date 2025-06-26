@@ -208,3 +208,8 @@ nav.navbar.fixed-top {
         width: 3rem;
         height: 3rem;
     }
+@media (min-width: 576px) {
+    .modal-dialog-centered {
+        min-height: calc(100% - 0rem)!important;
+    }
+}
