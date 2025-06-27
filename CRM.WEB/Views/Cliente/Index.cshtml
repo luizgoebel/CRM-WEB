@@ -62,7 +62,14 @@
         </div>
 
         <!-- Paginação -->
-        @await Html.PartialAsync("_Paginacao", Model.Paginacao)
+        <nav id="paginacao" class="mt-3"></nav>
+
+        <div id="dadosPaginacao"
+             data-pagina-atual="@Model.Paginacao.PaginaAtual"
+             data-total-paginas="@Model.Paginacao.TotalPaginas"
+             data-controller="cliente"
+             data-filtro="">
+        </div>
 
     </div>
 </div>
