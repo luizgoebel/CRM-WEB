@@ -1,10 +1,12 @@
 ﻿using CRM.Web.Models;
 using CRM.Web.ServiceClient.IServiceClient;
 using CRM.Web.Utils;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace CRM.Web.ServiceClient;
 
@@ -33,9 +35,9 @@ public class ProdutoServiceClient : IProdutoServiceClient
         return produto!;
     }
 
-    public async Task<PaginacaoResultado<ProdutoViewModel>> ObterProdutosPaginados(int page, int pageSize)
+    public async Task<PaginacaoResultado<ProdutoViewModel>> ObterProdutosPaginados(string filtro, int page, int pageSize)
     {
-        var response = await _httpClient.GetAsync($"api/Produto/ObterProdutosPaginados?page={page}&pageSize={pageSize}");
+        var response = await _httpClient.GetAsync($"api/produto/ObterProdutosPaginados?filtro={Uri.EscapeDataString(filtro)}&page={page}&pageSize={pageSize}");
 
         await TrataExcecao.TratarResponseException(response);
 

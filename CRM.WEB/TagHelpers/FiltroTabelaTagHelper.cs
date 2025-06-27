@@ -8,10 +8,11 @@ public class FiltroTabelaTagHelper : TagHelper
     public string TabelaId { get; set; }
     public string Placeholder { get; set; } = "Buscar...";
     public string InputId { get; set; }
+    public string Controller { get; set; }  // padrão pode ser cliente
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        output.TagName = null; // remove <filtro-tabela>
+        output.TagName = null;
         string idAttribute = string.IsNullOrEmpty(InputId) ? "" : $"id=\"{InputId}\"";
 
         output.Content.SetHtmlContent($@"
@@ -20,7 +21,8 @@ public class FiltroTabelaTagHelper : TagHelper
            class=""form-control filtro-tabela"" 
            {idAttribute}
            placeholder=""{Placeholder}""
-           data-filter=""#{TabelaId}"" />
+           data-filter=""#{TabelaId}""
+           data-controller=""{Controller}"" />
 </div>");
     }
 }

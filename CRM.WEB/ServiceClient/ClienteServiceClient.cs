@@ -1,6 +1,7 @@
 ﻿using CRM.Web.Models;
 using CRM.Web.ServiceClient.IServiceClient;
 using CRM.Web.Utils;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -37,9 +38,9 @@ public class ClienteServiceClient : IClienteServiceClient
         return clientes ?? new List<ClienteViewModel>();
     }
 
-    public async Task<PaginacaoResultado<ClienteViewModel>> ObterClientesPaginados(int page, int pageSize)
+    public async Task<PaginacaoResultado<ClienteViewModel>> ObterClientesPaginados(string filtro, int page, int pageSize)
     {
-        var response = await _httpClient.GetAsync($"api/Cliente/ObterClientesPaginados?page={page}&pageSize={pageSize}");
+        var response = await _httpClient.GetAsync($"api/Cliente/ObterClientesPaginados?filtro={Uri.EscapeDataString(filtro)}&page={page}&pageSize={pageSize}");
 
         await TrataExcecao.TratarResponseException(response);
 

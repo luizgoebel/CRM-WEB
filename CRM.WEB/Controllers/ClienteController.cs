@@ -23,7 +23,7 @@ public class ClienteController : Controller
         try
         {
             const int pageSize = 25;
-            var resultado = await _clienteServiceClient.ObterClientesPaginados(page, pageSize);
+            var resultado = await _clienteServiceClient.ObterClientesPaginados("", page, pageSize);
             var clienteIndexViewModel = new ClienteIndexViewModel
             {
                 Itens = resultado.Itens,
@@ -35,6 +35,37 @@ public class ClienteController : Controller
             };
 
             return View(clienteIndexViewModel);
+        }
+        catch (DomainException ex)
+        {
+            return GerenciadorRespostaJSON.create(ex.Message, true);
+        }
+        catch (Exception ex)
+        {
+            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> BuscarAjax(string filtro, int page = 1)
+    {
+        try
+        {
+            int pageSize = 25;
+            var resultado = await _clienteServiceClient.ObterClientesPaginados(filtro ?? "",page, pageSize);
+
+            if (resultado == null || resultado.Itens == null)
+            {
+                return Json(new PaginacaoResultado<ClienteViewModel>
+                {
+                    Itens = new List<ClienteViewModel>(),
+                    Total = 0,
+                    PaginaAtual = page,
+                    TotalPaginas = 0
+                });
+            }
+
+            return Json(resultado);
         }
         catch (DomainException ex)
         {
