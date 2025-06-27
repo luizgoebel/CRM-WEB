@@ -28,9 +28,9 @@
             $('#produtoModal').modal('show');
         },
         error: function (resultado) {
-            mostrarMensagem("Erro inesperado no servidor.");
+            mostrarMensagem("");
             esconderSpinner();
-        }
+        },
     });
 }
 
@@ -54,34 +54,13 @@ function salvarProduto() {
             }
             $('#produtoModal').modal('hide');
             esconderSpinner();
-            location.reload(); // opcional: depois pode substituir por atualização via JS
+            location.reload();
         },
         error: function (resultado) {
-            mostrarMensagem("Erro inesperado no servidor.");
+            mostrarMensagem("");
             esconderSpinner();
         }
     });
-}
-
-function filtroTabelaProduto() {
-    const input = document.getElementById("searchProdutoInput");
-    const filter = input.value.toLowerCase();
-    const table = document.getElementById("tabelaProdutos");
-    const trs = table.getElementsByTagName("tr");
-
-    for (let i = 1; i < trs.length; i++) {
-        const tds = trs[i].getElementsByTagName("td");
-        let show = false;
-
-        for (let j = 1; j < tds.length - 1; j++) {
-            if (tds[j].textContent.toLowerCase().indexOf(filter) > -1) {
-                show = true;
-                break;
-            }
-        }
-
-        trs[i].style.display = show ? "" : "none";
-    }
 }
 
 function excluirProduto(id) {
@@ -102,10 +81,10 @@ function excluirProduto(id) {
                     return;
                 }
                 esconderSpinner();
-                location.reload(); // opcional
+                location.reload();
             },
             error: function () {
-                mostrarMensagem("Erro inesperado no servidor.");
+                mostrarMensagem("");
                 esconderSpinner();
             }
         });

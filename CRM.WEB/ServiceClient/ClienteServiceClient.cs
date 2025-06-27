@@ -15,39 +15,35 @@ public class ClienteServiceClient : IClienteServiceClient
 
     public ClienteServiceClient(HttpClient httpClient)
     {
-        _httpClient = httpClient;
+        this._httpClient = httpClient;
     }
 
     public async Task<ClienteViewModel> ObterPorId(int id)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"api/Cliente/ObterPorId?id={id}");
-
+        HttpResponseMessage response = await this._httpClient.GetAsync($"api/Cliente/ObterPorId?id={id}");
         await TrataExcecao.TratarResponseException(response);
+        ClienteViewModel cliente = await response.Content.ReadFromJsonAsync<ClienteViewModel>();
 
-        var cliente = await response.Content.ReadFromJsonAsync<ClienteViewModel>();
         return cliente!;
     }
 
     public async Task<List<ClienteViewModel>> ObterTodosClientes()
     {
-        HttpResponseMessage response = await _httpClient.GetAsync("api/Cliente/ObterTodosClientes");
-
+        HttpResponseMessage response = await this._httpClient.GetAsync("api/Cliente/ObterTodosClientes");
         await TrataExcecao.TratarResponseException(response);
-
-        var clientes = await response.Content.ReadFromJsonAsync<List<ClienteViewModel>>();
-        return clientes ?? new List<ClienteViewModel>();
+        List<ClienteViewModel> clientes = await response.Content.ReadFromJsonAsync<List<ClienteViewModel>>();
+        
+        return clientes ?? new();
     }
 
     public async Task<PaginacaoResultado<ClienteViewModel>> ObterClientesPaginados(string filtro, int page, int pageSize)
     {
-        var response = await _httpClient.GetAsync($"api/Cliente/ObterClientesPaginados?filtro={Uri.EscapeDataString(filtro)}&page={page}&pageSize={pageSize}");
-
+        HttpResponseMessage response = await _httpClient.GetAsync($"api/Cliente/ObterClientesPaginados?filtro={Uri.EscapeDataString(filtro)}&page={page}&pageSize={pageSize}");
         await TrataExcecao.TratarResponseException(response);
+        PaginacaoResultado<ClienteViewModel> resultado = await response.Content.ReadFromJsonAsync<PaginacaoResultado<ClienteViewModel>>();
 
-        var resultado = await response.Content.ReadFromJsonAsync<PaginacaoResultado<ClienteViewModel>>();
         return resultado!;
     }
-
 
     public async Task SalvarCliente(ClienteViewModel clienteViewModel)
     {

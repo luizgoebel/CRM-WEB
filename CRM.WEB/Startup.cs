@@ -1,5 +1,6 @@
 ﻿using CRM.Web.ServiceClient;
 using CRM.Web.ServiceClient.IServiceClient;
+using CRM.Web.TagHelpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
@@ -27,6 +28,8 @@ public class Startup
         services.AddMemoryCache();
         services.AddControllersWithViews();
         ConfigurarUsoCamelCaseJSON(services);
+
+        services.AddScoped<RazorViewToStringRenderer>();
 
         services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 

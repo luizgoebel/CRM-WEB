@@ -1,10 +1,9 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using CRM.Web.Exceptions;
+using CRM.Web.Models;
+using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System;
-using CRM.Web.Exceptions;
-using CRM.Web.Models;
 
 namespace CRM.Web.Utils;
 

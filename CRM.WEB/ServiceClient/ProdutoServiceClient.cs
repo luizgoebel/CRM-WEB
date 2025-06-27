@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
 
 namespace CRM.Web.ServiceClient;
 
@@ -16,7 +15,7 @@ public class ProdutoServiceClient : IProdutoServiceClient
 
     public ProdutoServiceClient(HttpClient httpClient)
     {
-        _httpClient = httpClient;
+        this._httpClient = httpClient;
     }
 
     public async Task ExcluirProduto(int idProduto)
@@ -28,31 +27,28 @@ public class ProdutoServiceClient : IProdutoServiceClient
     public async Task<ProdutoViewModel> ObterPorId(int id)
     {
         HttpResponseMessage response = await _httpClient.GetAsync($"api/Produto/ObterPorId?id={id}");
-
         await TrataExcecao.TratarResponseException(response);
+        ProdutoViewModel produto = await response.Content.ReadFromJsonAsync<ProdutoViewModel>();
 
-        var produto = await response.Content.ReadFromJsonAsync<ProdutoViewModel>();
         return produto!;
     }
 
     public async Task<PaginacaoResultado<ProdutoViewModel>> ObterProdutosPaginados(string filtro, int page, int pageSize)
     {
-        var response = await _httpClient.GetAsync($"api/produto/ObterProdutosPaginados?filtro={Uri.EscapeDataString(filtro)}&page={page}&pageSize={pageSize}");
-
+        HttpResponseMessage response = await _httpClient.GetAsync($"api/produto/ObterProdutosPaginados?filtro={Uri.EscapeDataString(filtro)}&page={page}&pageSize={pageSize}");
         await TrataExcecao.TratarResponseException(response);
-
-        var resultado = await response.Content.ReadFromJsonAsync<PaginacaoResultado<ProdutoViewModel>>();
+        PaginacaoResultado<ProdutoViewModel> resultado = await response.Content.ReadFromJsonAsync<PaginacaoResultado<ProdutoViewModel>>();
+        
         return resultado!;
     }
 
     public async Task<List<ProdutoViewModel>> ObterTodosClientes()
     {
         HttpResponseMessage response = await _httpClient.GetAsync("api/Produto/ObterTodosProdutos");
-
         await TrataExcecao.TratarResponseException(response);
+        List<ProdutoViewModel> produtos = await response.Content.ReadFromJsonAsync<List<ProdutoViewModel>>();
 
-        var produtos = await response.Content.ReadFromJsonAsync<List<ProdutoViewModel>>();
-        return produtos ?? new List<ProdutoViewModel>();
+        return produtos ?? new();
     }
 
     public async Task SalvarProduto(ProdutoViewModel produtoViewModel)

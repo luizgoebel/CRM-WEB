@@ -1,10 +1,10 @@
 ﻿using CRM.Web.Exceptions;
 using CRM.Web.Models;
 using CRM.Web.ServiceClient.IServiceClient;
+using CRM.Web.TagHelpers;
 using CRM.Web.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CRM.Web.Controllers;
@@ -12,10 +12,12 @@ namespace CRM.Web.Controllers;
 public class ClienteController : Controller
 {
     private readonly IClienteServiceClient _clienteServiceClient;
+    private readonly RazorViewToStringRenderer _renderer;
 
-    public ClienteController(IClienteServiceClient clienteServiceClient)
+    public ClienteController(IClienteServiceClient clienteServiceClient, RazorViewToStringRenderer renderer)
     {
-        _clienteServiceClient = clienteServiceClient;
+        this._clienteServiceClient = clienteServiceClient;
+        this._renderer = renderer;
     }
 
     public async Task<IActionResult> Index(int page = 1)
@@ -23,11 +25,11 @@ public class ClienteController : Controller
         try
         {
             const int pageSize = 25;
-            var resultado = await _clienteServiceClient.ObterClientesPaginados("", page, pageSize);
-            var clienteIndexViewModel = new ClienteIndexViewModel
+            PaginacaoResultado<ClienteViewModel> resultado = await this._clienteServiceClient.ObterClientesPaginados("", page, pageSize);
+            ClienteIndexViewModel clienteIndexViewModel = new()
             {
                 Itens = resultado.Itens,
-                Paginacao = new PaginacaoViewModel
+                Paginacao = new()
                 {
                     PaginaAtual = resultado.PaginaAtual,
                     TotalPaginas = resultado.TotalPaginas
@@ -47,25 +49,27 @@ public class ClienteController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> BuscarAjax(string filtro, int page = 1)
+    public async Task<IActionResult> BuscarAjax(string filtro = "", int page = 1)
     {
         try
         {
             int pageSize = 25;
-            var resultado = await _clienteServiceClient.ObterClientesPaginados(filtro ?? "",page, pageSize);
+            PaginacaoResultado<ClienteViewModel> resultado = await this._clienteServiceClient.ObterClientesPaginados(filtro ?? "", page, pageSize);
 
-            if (resultado == null || resultado.Itens == null)
+            ClienteIndexViewModel model = new()
             {
-                return Json(new PaginacaoResultado<ClienteViewModel>
+                Itens = resultado.Itens,
+                Paginacao = new()
                 {
-                    Itens = new List<ClienteViewModel>(),
-                    Total = 0,
-                    PaginaAtual = page,
-                    TotalPaginas = 0
-                });
-            }
+                    PaginaAtual = resultado.PaginaAtual,
+                    TotalPaginas = resultado.TotalPaginas
+                }
+            };
 
-            return Json(resultado);
+            string htmlTabela = await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_TabelaClientes", model.Itens);
+            string htmlPaginacao = await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_Paginacao", model.Paginacao);
+
+            return Json(new { tabelaHtml = htmlTabela, paginacaoHtml = htmlPaginacao });
         }
         catch (DomainException ex)
         {
@@ -77,16 +81,16 @@ public class ClienteController : Controller
         }
     }
 
-
     public async Task<IActionResult> ClienteModal(int? id, bool somenteVisualizacao = false)
     {
         try
         {
             ClienteViewModel cliente = id.HasValue
-                ? await _clienteServiceClient.ObterPorId(id.Value)
+                ? await this._clienteServiceClient.ObterPorId(id.Value)
                 : new ClienteViewModel();
 
             ViewBag.SomenteLeitura = somenteVisualizacao;
+
             return PartialView("_ClienteModal", cliente);
         }
         catch (DomainException ex)
@@ -98,11 +102,13 @@ public class ClienteController : Controller
             return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
         }
     }
+
     public async Task<JsonResult> SalvarCliente(ClienteViewModel clienteViewModel)
     {
         try
         {
-            await _clienteServiceClient.SalvarCliente(clienteViewModel);
+            await this._clienteServiceClient.SalvarCliente(clienteViewModel);
+
             return GerenciadorRespostaJSON.create();
         }
         catch (DomainException ex)

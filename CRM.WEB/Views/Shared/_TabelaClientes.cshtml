@@ -1,0 +1,20 @@
+﻿@using CRM.Web.Models
+@model List<ClienteViewModel>
+
+@foreach (var cliente in Model)
+{
+    <tr>
+        <td>@cliente.Nome</td>
+        <td>@cliente.Email</td>
+        <td>@cliente.Endereco</td>
+        <td>@cliente.Telefone</td>
+        <td class="acao">
+            <button type="button" class="btn btn-warning btn-sm me-1" title="Editar" onclick="abrirModalCliente(@cliente.Id, false)">
+                <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-info btn-sm" title="Visualizar" onclick="abrirModalCliente(@cliente.Id, true)">
+                <i class="bi bi-eye"></i>
+            </button>
+        </td>
+    </tr>
+}

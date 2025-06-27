@@ -1,10 +1,10 @@
 ﻿using CRM.Web.Exceptions;
 using CRM.Web.Models;
 using CRM.Web.ServiceClient.IServiceClient;
+using CRM.Web.TagHelpers;
 using CRM.Web.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CRM.Web.Controllers;
@@ -12,10 +12,12 @@ namespace CRM.Web.Controllers;
 public class ProdutoController : Controller
 {
     private readonly IProdutoServiceClient _produtoServiceClient;
+    private readonly RazorViewToStringRenderer _renderer;
 
-    public ProdutoController(IProdutoServiceClient produtoServiceClient)
+    public ProdutoController(IProdutoServiceClient produtoServiceClient, RazorViewToStringRenderer renderer)
     {
-        _produtoServiceClient = produtoServiceClient;
+        this._produtoServiceClient = produtoServiceClient;
+        this._renderer = renderer;
     }
 
     public async Task<IActionResult> Index(int page = 1)
@@ -23,11 +25,11 @@ public class ProdutoController : Controller
         try
         {
             const int pageSize = 25;
-            var resultado = await _produtoServiceClient.ObterProdutosPaginados("", page, pageSize);
-            var produtoIndexViewModel = new ProdutoIndexViewModel
+            PaginacaoResultado<ProdutoViewModel> resultado = await this._produtoServiceClient.ObterProdutosPaginados("", page, pageSize);
+            ProdutoIndexViewModel produtoIndexViewModel = new()
             {
                 Itens = resultado.Itens,
-                Paginacao = new PaginacaoViewModel
+                Paginacao = new()
                 {
                     PaginaAtual = resultado.PaginaAtual,
                     TotalPaginas = resultado.TotalPaginas
@@ -47,25 +49,27 @@ public class ProdutoController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> BuscarAjax(string filtro, int page = 1)
+    public async Task<IActionResult> BuscarAjax(string filtro = "", int page = 1)
     {
         try
         {
             int pageSize = 25;
-            var resultado = await _produtoServiceClient.ObterProdutosPaginados(filtro ?? "", page, pageSize);
+            PaginacaoResultado<ProdutoViewModel> resultado = await this._produtoServiceClient.ObterProdutosPaginados(filtro ?? "", page, pageSize);
 
-            if (resultado == null || resultado.Itens == null)
+            ProdutoIndexViewModel model = new()
             {
-                return Json(new PaginacaoResultado<ProdutoViewModel>
+                Itens = resultado.Itens,
+                Paginacao = new()
                 {
-                    Itens = new List<ProdutoViewModel>(),
-                    Total = 0,
-                    PaginaAtual = page,
-                    TotalPaginas = 0
-                });
-            }
+                    PaginaAtual = resultado.PaginaAtual,
+                    TotalPaginas = resultado.TotalPaginas
+                }
+            };
 
-            return Json(resultado);
+            string htmlTabela = await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_TabelaProdutos", model.Itens);
+            string htmlPaginacao = await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_Paginacao", model.Paginacao);
+
+            return Json(new { tabelaHtml = htmlTabela, paginacaoHtml = htmlPaginacao });
         }
         catch (DomainException ex)
         {
@@ -82,10 +86,11 @@ public class ProdutoController : Controller
         try
         {
             ProdutoViewModel produto = id.HasValue
-                ? await _produtoServiceClient.ObterPorId(id.Value)
+                ? await this._produtoServiceClient.ObterPorId(id.Value)
                 : new ProdutoViewModel();
 
             ViewBag.SomenteLeitura = somenteVisualizacao;
+
             return PartialView("_ProdutoModal", produto);
         }
         catch (DomainException ex)
@@ -97,11 +102,13 @@ public class ProdutoController : Controller
             return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
         }
     }
+
     public async Task<JsonResult> SalvarProduto(ProdutoViewModel produtoViewModel)
     {
         try
         {
-            await _produtoServiceClient.SalvarProduto(produtoViewModel);
+            await this._produtoServiceClient.SalvarProduto(produtoViewModel);
+
             return GerenciadorRespostaJSON.create();
         }
         catch (DomainException ex)
@@ -118,7 +125,8 @@ public class ProdutoController : Controller
     {
         try
         {
-            await _produtoServiceClient.ExcluirProduto(idProduto);
+            await this._produtoServiceClient.ExcluirProduto(idProduto);
+
             return GerenciadorRespostaJSON.create();
         }
         catch (DomainException ex)

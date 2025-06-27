@@ -1,0 +1,25 @@
+﻿@using CRM.Web.Models
+@model List<ProdutoViewModel>
+
+@foreach (var produto in Model)
+{
+    <tr>
+        <td style="display: none;">@produto.Id</td>
+        <td>@produto.Nome</td>
+        <td>R$ @produto.Preco?.ToString("F2")</td>
+        <td class="acao">
+            <button type="button"
+                    class="btn btn-warning btn-sm me-1"
+                    title="Editar"
+                    onclick="abrirModalProduto(@produto.Id, false)">
+                <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-info btn-sm me-1" title="Visualizar" onclick="abrirModalProduto(@produto.Id, true)">
+                <i class="bi bi-eye"></i>
+            </button>
+            <button type="button" class="btn btn-danger btn-sm" title="Excluir" onclick="excluirProduto(@produto.Id)">
+                <i class="bi bi-trash"></i>
+            </button>
+        </td>
+    </tr>
+}
