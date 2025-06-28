@@ -20,11 +20,24 @@ public class ClienteController : Controller
         this._renderer = renderer;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index(int pagina = 1, string filtro = "")
     {
         try
         {
-            return View(new ClienteIndexViewModel());
+            int pageSize = 25;
+            PaginacaoResultado<ClienteViewModel> resultado = await this._clienteServiceClient.ObterClientesPaginados(filtro, pagina, pageSize);
+            ClienteIndexViewModel model = new()
+            {
+                Itens = resultado.Itens,
+                Paginacao = new()
+                {
+                    Controller = "Cliente",
+                    PaginaAtual = resultado.PaginaAtual,
+                    TotalPaginas = resultado.TotalPaginas
+                }
+            };
+
+            return View(model);
         }
         catch (DomainException ex)
         {

@@ -22,7 +22,8 @@ public class FiltroTabelaTagHelper : TagHelper
            {idAttribute}
            placeholder=""{Placeholder}""
            data-filter=""#{TabelaId}""
-           data-controller=""{Controller}"" />
+           data-controller=""{Controller}""
+           data-tabela-id=""{TabelaId}"" />
 </div>");
     }
 }

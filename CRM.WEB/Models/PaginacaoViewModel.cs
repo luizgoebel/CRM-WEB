@@ -4,6 +4,8 @@ namespace CRM.Web.Models;
 
 public class PaginacaoViewModel
 {
+    public string Controller { get; set; } = "";
+
     public int PaginaAtual { get; set; } = 1;
     public int TotalPaginas { get; set; } = 1;
     public int PaginasPorGrupo { get; set; } = 5;

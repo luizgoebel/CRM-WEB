@@ -20,11 +20,25 @@ public class ProdutoController : Controller
         this._renderer = renderer;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index(int pagina = 1, string filtro = "")
     {
         try
         {
-            return View(new ProdutoIndexViewModel());
+            int pageSize = 25;
+            PaginacaoResultado<ProdutoViewModel> resultado = await this._produtoServiceClient.ObterProdutosPaginados(filtro, pagina, pageSize);
+
+            ProdutoIndexViewModel model = new()
+            {
+                Itens = resultado.Itens,
+                Paginacao = new()
+                {
+                    Controller = "Produto",
+                    PaginaAtual = resultado.PaginaAtual,
+                    TotalPaginas = resultado.TotalPaginas
+                }
+            };
+
+            return View(model);
         }
         catch (DomainException ex)
         {

@@ -1,24 +1,29 @@
 ﻿@model CRM.Web.Models.PaginacaoViewModel
 
+@{
+    string filtro = Context.Request.Query["filtro"];
+    string controller = Model.Controller;
+}
+
 <ul class="pagination justify-content-end">
     @if (Model.PaginaAtual > 1)
     {
         <li class="page-item">
-            <a class="page-link" href="#" data-page="@(Model.PaginaAtual - 1)">&laquo;</a>
+            <a class="page-link" href="@Url.Action("Index", controller, new { pagina = Model.PaginaAtual - 1, filtro })">&laquo;</a>
         </li>
     }
 
     @for (int i = Model.InicioGrupo; i <= Model.FimGrupo; i++)
     {
         <li class="page-item @(Model.PaginaAtual == i ? "active" : "")">
-            <a class="page-link" href="#" data-page="@i">@i</a>
+            <a class="page-link" href="@Url.Action("Index", controller, new { pagina = i, filtro })">@i</a>
         </li>
     }
 
     @if (Model.FimGrupo < Model.TotalPaginas)
     {
         <li class="page-item">
-            <a class="page-link" href="#" data-page="@(Model.FimGrupo + 1)">&raquo;</a>
+            <a class="page-link" href="@Url.Action("Index", controller, new { pagina = Model.FimGrupo + 1, filtro })">&raquo;</a>
         </li>
     }
 </ul>

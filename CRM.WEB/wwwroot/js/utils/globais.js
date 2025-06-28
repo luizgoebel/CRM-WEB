@@ -5,31 +5,24 @@
         input.addEventListener("input", async function () {
             const filtro = input.value.trim().toLowerCase();
             const controller = input.dataset.controller;
+            const tabelaId = input.dataset.tabelaId;
             if (!controller) return;
 
-            await buscarDadosAjax(controller, filtro, 1);
+            // Faz a busca AJAX
+            await buscarDadosAjax(controller, filtro, 1, tabelaId);
+
+            // Atualiza URL com filtro e página 1
+            const novaUrl = `/${controller}?pagina=1&filtro=${encodeURIComponent(filtro)}`;
+            window.history.pushState({}, '', novaUrl);
         });
     });
-
-    const paginacaoInfo = document.getElementById("dadosPaginacao");
-    if (paginacaoInfo) {
-        const paginaAtual = parseInt(paginacaoInfo.dataset.paginaAtual);
-        const totalPaginas = parseInt(paginacaoInfo.dataset.totalPaginas);
-        const controller = paginacaoInfo.dataset.controller;
-        const filtro = paginacaoInfo.dataset.filtro || "";
-
-        if (controller)
-            buscarDadosAjax(controller, filtro, paginaAtual);
-    }
 });
 
-async function buscarDadosAjax(controller, filtro = "", pagina = 1) {
+async function buscarDadosAjax(controller, filtro = "", pagina = 1, tabelaId) {
     try {
         mostrarSpinner();
 
-        // Realizado requisição ajax pra controller recebida por parametro, e o restante da url é padrão pra quem consumir a função
-        const response = await fetch(`/${controller}/BuscarAjax?filtro=${encodeURIComponent(filtro)}&page=${pagina}`);
-        // Verifica se a resposta foi bem sucedida
+        const response = await fetch(`/${controller}/BuscarAjax?filtro=${encodeURIComponent(filtro)}&pagina=${pagina}`);
         if (!response.ok) {
             mostrarMensagem("");
             return;
@@ -37,27 +30,16 @@ async function buscarDadosAjax(controller, filtro = "", pagina = 1) {
 
         const resultado = await response.json();
 
-        // Recuperar elementos de tabela instanciada e paginação
-        const wrapperTabela = document.getElementById("corpoTabelaClientes")
-            || document.getElementById("corpoTabelaProdutos");
-        const wrapperPaginacao = document.getElementById("paginacao");
-
-        // Valida se veio o html e sub
-        if (wrapperTabela && resultado.tabelaHtml) {
-            wrapperTabela.innerHTML = resultado.tabelaHtml;
+        if (tabelaId) {
+            const wrapperTabela = document.getElementById(tabelaId);
+            if (wrapperTabela && resultado.tabelaHtml) {
+                wrapperTabela.innerHTML = resultado.tabelaHtml;
+            }
         }
 
+        const wrapperPaginacao = document.getElementById("paginacao");
         if (wrapperPaginacao && resultado.paginacaoHtml) {
             wrapperPaginacao.innerHTML = resultado.paginacaoHtml;
-
-            // Rebind paginação
-            wrapperPaginacao.querySelectorAll("a.page-link").forEach(link => {
-                link.addEventListener("click", async function (e) {
-                    e.preventDefault();
-                    const novaPagina = parseInt(this.dataset.page);
-                    await buscarDadosAjax(controller, filtro, novaPagina);
-                });
-            });
         }
     } catch (error) {
         mostrarMensagem("");
