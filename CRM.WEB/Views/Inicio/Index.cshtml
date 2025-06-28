@@ -1,86 +1,124 @@
 ﻿@{
-    ViewData["Title"] = "Página Inicial";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="container-fluid pt-navbar">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="display-6 fw-bold">Bem-vindo ao <span class="text-primary">CRM Web</span></h1>
-            <p class="text-muted">Acompanhe os principais indicadores do sistema abaixo.</p>
-        </div>
-    </div>
+<h2 class="mb-4">@ViewData["Title"]</h2>
 
-    <div class="row g-3">
-        <!-- Cards de indicadores -->
-        <div class="col-md-4">
-            <div class="card text-bg-primary shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Clientes Ativos</h5>
-                    <p class="fs-3 fw-semibold">1.250</p>
-                    <p class="mb-0">Última atualização: hoje</p>
+<div class="card shadow-sm h-100 d-flex flex-column">
+    <div class="card-body p-3 overflow-auto" style="min-height: 0; max-height: calc(100vh - 200px);">
+
+        <!-- Título e introdução -->
+        <div class="mb-4">
+            <h4 class="fw-bold">Bem-vindo ao <span class="text-primary">CRM Web</span></h4>
+            <p class="text-muted">Visão geral do sistema e seus indicadores principais.</p>
+        </div>
+
+        <!-- Indicadores principais -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="bi bi-people-fill fs-1 text-primary"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 text-muted">Clientes Ativos</h6>
+                            <h3 class="mb-0 fw-bold">1.250</h3>
+                            <small class="text-success">Atualizado hoje</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="bi bi-box-seam fs-1 text-success"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 text-muted">Produtos no Estoque</h6>
+                            <h3 class="mb-0 fw-bold">3.764</h3>
+                            <small class="text-success">Estoque atualizado</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="bi bi-cart-check fs-1 text-warning"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 text-muted">Pedidos do Dia</h6>
+                            <h3 class="mb-0 fw-bold">128</h3>
+                            <small class="text-warning">Inclui pendências</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-bg-success shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Produtos no Estoque</h5>
-                    <p class="fs-3 fw-semibold">3.764</p>
-                    <p class="mb-0">Estoque atualizado</p>
+
+        <!-- Conteúdo principal -->
+        <div class="d-flex flex-column flex-lg-row gap-4">
+            <!-- Gráfico -->
+            <div class="flex-grow-1">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Vendas por Mês</h5>
+                        <canvas id="graficoVendas" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Atividades recentes -->
+            <div style="width: 100%; max-width: 350px;">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Atividades Recentes</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Novo pedido cadastrado - <small class="text-muted">há 5 minutos</small></li>
+                            <li class="list-group-item">Cliente "João Silva" atualizado - <small class="text-muted">há 10 minutos</small></li>
+                            <li class="list-group-item">Produto "Mouse Gamer" adicionado - <small class="text-muted">há 30 minutos</small></li>
+                            <li class="list-group-item">Backup diário realizado - <small class="text-muted">há 1 hora</small></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-bg-warning shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Pedidos do Dia</h5>
-                    <p class="fs-3 fw-semibold">128</p>
-                    <p class="mb-0">Incluindo vendas pendentes</p>
-                </div>
-            </div>
-        </div>
+
     </div>
 </div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const labels = @Html.Raw(Json.Serialize(new[] { "19/06", "20/06", "21/06", "22/06", "23/06", "24/06", "25/06" }));
-
-        const vendasData = {
-            labels: labels,
-            datasets: [{
-                label: 'Vendas',
-                data: @Html.Raw(Json.Serialize(new[] { 56, 94, 56, 92, 30, 38, 37 })),
-                borderColor: 'rgba(13, 110, 253, 1)',
-                backgroundColor: 'rgba(13, 110, 253, 0.2)',
-                fill: true,
-                tension: 0.4
-            }]
-        };
-
-        const estoqueData = {
-            labels: labels,
-            datasets: [{
-                label: 'Estoque',
-                data: @Html.Raw(Json.Serialize(new[] { 121, 98, 148, 142, 65, 86, 138 })),
-                borderColor: 'rgba(25, 135, 84, 1)',
-                backgroundColor: 'rgba(25, 135, 84, 0.2)',
-                fill: true,
-                tension: 0.4
-            }]
-        };
-
-        new Chart(document.getElementById('vendasChart'), {
-            type: 'line',
-            data: vendasData,
-            options: { responsive: true, plugins: { legend: { display: false } } }
-        });
-
-        new Chart(document.getElementById('estoqueChart'), {
-            type: 'line',
-            data: estoqueData,
-            options: { responsive: true, plugins: { legend: { display: false } } }
+        const ctx = document.getElementById('graficoVendas').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Vendas',
+                    data: [120, 190, 300, 500, 200, 300],
+                    backgroundColor: 'rgba(13, 110, 253, 0.5)',
+                    borderColor: 'rgba(13, 110, 253, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
         });
     </script>
 }

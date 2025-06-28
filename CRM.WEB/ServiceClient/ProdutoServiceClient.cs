@@ -35,7 +35,7 @@ public class ProdutoServiceClient : IProdutoServiceClient
 
     public async Task<PaginacaoResultado<ProdutoViewModel>> ObterProdutosPaginados(string filtro, int page, int pageSize)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"api/produto/ObterProdutosPaginados?filtro={Uri.EscapeDataString(filtro)}&page={page}&pageSize={pageSize}");
+        HttpResponseMessage response = await _httpClient.GetAsync($"api/produto/ObterProdutosPaginados?page={page}&pageSize={pageSize}&filtro={Uri.EscapeDataString(filtro ?? string.Empty)}");
         await TrataExcecao.TratarResponseException(response);
         PaginacaoResultado<ProdutoViewModel> resultado = await response.Content.ReadFromJsonAsync<PaginacaoResultado<ProdutoViewModel>>();
         

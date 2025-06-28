@@ -38,7 +38,9 @@ public class ClienteServiceClient : IClienteServiceClient
 
     public async Task<PaginacaoResultado<ClienteViewModel>> ObterClientesPaginados(string filtro, int page, int pageSize)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"api/Cliente/ObterClientesPaginados?filtro={Uri.EscapeDataString(filtro)}&page={page}&pageSize={pageSize}");
+        HttpResponseMessage response = await _httpClient.GetAsync(
+            $"api/Cliente/ObterClientesPaginados?page={page}&pageSize={pageSize}&filtro={Uri.EscapeDataString(filtro ?? string.Empty)}"
+        );
         await TrataExcecao.TratarResponseException(response);
         PaginacaoResultado<ClienteViewModel> resultado = await response.Content.ReadFromJsonAsync<PaginacaoResultado<ClienteViewModel>>();
 

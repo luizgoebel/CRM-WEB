@@ -20,23 +20,11 @@ public class ClienteController : Controller
         this._renderer = renderer;
     }
 
-    public async Task<IActionResult> Index(int page = 1)
+    public IActionResult Index()
     {
         try
         {
-            const int pageSize = 25;
-            PaginacaoResultado<ClienteViewModel> resultado = await this._clienteServiceClient.ObterClientesPaginados("", page, pageSize);
-            ClienteIndexViewModel clienteIndexViewModel = new()
-            {
-                Itens = resultado.Itens,
-                Paginacao = new()
-                {
-                    PaginaAtual = resultado.PaginaAtual,
-                    TotalPaginas = resultado.TotalPaginas
-                }
-            };
-
-            return View(clienteIndexViewModel);
+            return View(new ClienteIndexViewModel());
         }
         catch (DomainException ex)
         {
@@ -49,7 +37,7 @@ public class ClienteController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> BuscarAjax(string filtro = "", int page = 1)
+    public async Task<IActionResult> BuscarAjax(string filtro, int page = 1)
     {
         try
         {

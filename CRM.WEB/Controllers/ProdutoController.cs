@@ -20,23 +20,11 @@ public class ProdutoController : Controller
         this._renderer = renderer;
     }
 
-    public async Task<IActionResult> Index(int page = 1)
+    public IActionResult Index()
     {
         try
         {
-            const int pageSize = 25;
-            PaginacaoResultado<ProdutoViewModel> resultado = await this._produtoServiceClient.ObterProdutosPaginados("", page, pageSize);
-            ProdutoIndexViewModel produtoIndexViewModel = new()
-            {
-                Itens = resultado.Itens,
-                Paginacao = new()
-                {
-                    PaginaAtual = resultado.PaginaAtual,
-                    TotalPaginas = resultado.TotalPaginas
-                }
-            };
-
-            return View(produtoIndexViewModel);
+            return View(new ProdutoIndexViewModel());
         }
         catch (DomainException ex)
         {
@@ -49,7 +37,7 @@ public class ProdutoController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> BuscarAjax(string filtro = "", int page = 1)
+    public async Task<IActionResult> BuscarAjax(string filtro, int page = 1)
     {
         try
         {
