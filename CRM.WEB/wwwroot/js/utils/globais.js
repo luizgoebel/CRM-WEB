@@ -10,17 +10,6 @@
             await buscarDadosAjax(controller, filtro, 1);
         });
     });
-
-    const paginacaoInfo = document.getElementById("dadosPaginacao");
-    if (paginacaoInfo) {
-        const paginaAtual = parseInt(paginacaoInfo.dataset.paginaAtual);
-        const totalPaginas = parseInt(paginacaoInfo.dataset.totalPaginas);
-        const controller = paginacaoInfo.dataset.controller;
-        const filtro = paginacaoInfo.dataset.filtro || "";
-
-        if (controller)
-            buscarDadosAjax(controller, filtro, paginaAtual);
-    }
 });
 
 
@@ -39,7 +28,7 @@ async function buscarDadosAjax(controller, filtro = "", pagina = 1) {
         const resultado = await response.json();
 
         // Recuperar elementos de tabela instanciada e paginação
-        const wrapperTabela = document.getElementById("corpoTabelaClientes") 
+        const wrapperTabela = document.getElementById("corpoTabelaClientes")
             || document.getElementById("corpoTabelaProdutos");
         const wrapperPaginacao = document.getElementById("paginacao");
 
