@@ -23,8 +23,6 @@
     }
 });
 
-
-
 async function buscarDadosAjax(controller, filtro = "", pagina = 1) {
     try {
         mostrarSpinner();
