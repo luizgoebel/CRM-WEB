@@ -123,47 +123,37 @@
     });
 
     // ===== DELEGAÇÃO DE CLIQUE NA PAGINAÇÃO =====
-    // Adiciona um listener para capturar todos os cliques no body da página
     document.body.addEventListener("click", function (e) {
-        // Procura pelo elemento de link de paginação mais próximo do alvo do clique
         const link = e.target.closest("a.page-link");
-        if (!link) return; // Se não for um link de paginação, não faz nada
+        if (!link) return;
 
-        // Obtém o atributo href do link clicado
         const href = link.getAttribute("href");
-        if (!href) return; // Se não houver href, não faz nada
+        if (!href) return;
 
-        // Extrai os parâmetros da URL (após o '?') usando URLSearchParams
         const urlParams = new URLSearchParams(href.split('?')[1]);
-        // Obtém o valor do parâmetro "pagina" da URL
         const paginaClicada = urlParams.get("pagina");
-        if (!paginaClicada) return; // Se não houver página, não faz nada
+        if (!paginaClicada) return;
 
-        // Converte o valor da página para inteiro
         const pagina = parseInt(paginaClicada, 10);
-        // Obtém o elemento que armazena os dados de paginação
         const dadosPaginacao = document.getElementById("dadosPaginacao");
-        if (!dadosPaginacao) return; // Se não existir, não faz nada
+        if (!dadosPaginacao) return;
 
-        // Recupera o filtro atual, total de páginas, controller e id da tabela dos atributos do elemento
-        const filtro = dadosPaginacao.getAttribute("data-filtro");
+        const filtro = dadosPaginacao.getAttribute("data-filtro") || "";
         const totalPaginas = parseInt(dadosPaginacao.getAttribute("data-total-paginas"), 10);
         const controller = dadosPaginacao.getAttribute("data-controller");
-        const tabelaId = filtros[0]?.dataset.tabelaId;
+        const tabelaId = dadosPaginacao.getAttribute("data-tabela-id");
 
-        // Impede a navegação se for a primeira página ou se houver filtro e só existir uma página
         if (pagina === 1 || (filtro && filtro.trim().length > 0 && totalPaginas === 1)) {
             e.preventDefault();
             return;
         }
 
-        // Impede o comportamento padrão do link
         e.preventDefault();
-        // Chama a função para buscar os dados da nova página via AJAX
         buscarDadosAjax(controller, filtro, pagina, tabelaId);
-        // Atualiza a URL do navegador para refletir a nova página e filtro
-        const novaUrl = `/${controller}?pagina=${pagina}&filtro=${encodeURIComponent(filtro)}`;
-        window.history.pushState({}, '', novaUrl);
+        window.history.pushState({}, '', `/${controller}?pagina=${pagina}&filtro=${encodeURIComponent(filtro)}`);
+
+        // Atualiza o data-pagina-atual também
+        dadosPaginacao.setAttribute("data-pagina-atual", pagina);
     });
 });
 
@@ -171,13 +161,14 @@ async function buscarDadosAjax(controller, filtro = "", pagina = 1, tabelaId) {
     try {
         mostrarSpinner();
 
-        const response = await fetch(`/${controller}/BuscarAjax?filtro=${encodeURIComponent(filtro)}&pagina=${pagina}`);
+        const response = await fetch(`/${controller}/BuscarAjax?filtro=${encodeURIComponent(filtro)}&page=${pagina}`);
         if (!response.ok) {
             mostrarMensagem("Erro ao buscar dados.");
             return;
         }
 
         const resultado = await response.json();
+        console.log("Resultado da busca AJAX:", resultado); // <-- log pra debug
 
         if (tabelaId) {
             const wrapperTabela = document.getElementById(tabelaId);
@@ -207,6 +198,7 @@ async function buscarDadosAjax(controller, filtro = "", pagina = 1, tabelaId) {
         esconderSpinner();
     }
 }
+
 
 function mostrarSpinner() {
     const spinner = document.getElementById('spinnerGlobal');
