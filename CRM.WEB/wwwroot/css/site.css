@@ -231,4 +231,16 @@ nav.navbar.fixed-top {
     text-align: center;
 }
 
+.btn-limpar-filtro i {
+    pointer-events: none; /* para o clique ir para o botão */
+}
+.btn-limpar-filtro {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+.btn-limpar-filtro {
+    border: none !important;
+    box-shadow: none !important;
+}
 

@@ -5,6 +5,24 @@
         let timeout = null;
         let filtroAnterior = "";
 
+        const wrapper = input.closest(".input-group");
+        const btnLimpar = wrapper?.querySelector(".btn-limpar-filtro");
+
+        if (!btnLimpar) return;
+
+        btnLimpar.addEventListener("click", async function () {
+            input.value = "";
+            filtroAnterior = "";
+            btnLimpar.style.display = "none";
+
+            const controller = input.dataset.controller;
+            const tabelaId = input.dataset.tabelaId;
+            if (!controller || !tabelaId) return;
+
+            await buscarDadosAjax(controller, "", 1, tabelaId);
+            window.history.pushState({}, '', `/${controller}`);
+        });
+
         input.addEventListener("input", function () {
             const valorOriginal = input.value;
             const filtro = valorOriginal.trim().toLowerCase();
@@ -19,24 +37,28 @@
             const digitouAlgo = valorOriginal.length > 0;
             const filtroValido = filtro.length >= 3;
 
-            // Se inválido, mostra tooltip (menos de 3 letras ou só espaços)
+            // Mostra/oculta botão limpar
+            btnLimpar.style.display = filtroValido ? "inline-block" : "none";
+
             if (digitouAlgo && (soEspacos || !filtroValido)) {
                 const existente = bootstrap.Tooltip.getInstance(input);
                 if (existente) existente.dispose();
 
+                input.setAttribute("title", "Digite pelo menos 3 caracteres para buscar");
+
                 const tooltip = new bootstrap.Tooltip(input, {
                     trigger: 'manual',
-                    customClass: 'tooltip-amigavel',
-                    title: 'Digite pelo menos 3 caracteres para buscar'
+                    customClass: 'tooltip-amigavel'
                 });
                 tooltip.show();
 
-                setTimeout(() => tooltip.hide(), 2000);
+                setTimeout(() => {
+                    tooltip.hide();
+                    input.removeAttribute("title");
+                }, 2000);
                 return;
             }
 
-
-            // Se válido, executa busca com debounce
             timeout = setTimeout(async function () {
                 if (filtro === filtroAnterior) return;
 
@@ -46,15 +68,18 @@
 
                 const novaUrl = `/${controller}?pagina=1&filtro=${encodeURIComponent(filtro)}`;
                 window.history.pushState({}, '', novaUrl);
-            }, 300); // ajuste aqui em prod
+            }, 300);
         });
     });
 
-    // Inicializa tooltips no carregamento da página
+    // Inicializa tooltips
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
         new bootstrap.Tooltip(el);
     });
 });
+
+
+
 
 
 
