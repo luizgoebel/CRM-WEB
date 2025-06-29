@@ -9,6 +9,18 @@
         const btnLimpar = wrapper?.querySelector(".btn-limpar-filtro");
         if (!btnLimpar) return;
 
+        function atualizarUrlNavegador(controller, pagina = 1, filtro = "") {
+            const filtroLimpo = filtro?.trim();
+            let novaUrl = `/${controller}`;
+            if (pagina > 1 || filtroLimpo) {
+                novaUrl += `?pagina=${pagina}`;
+                if (filtroLimpo) {
+                    novaUrl += `&filtro=${encodeURIComponent(filtroLimpo)}`;
+                }
+            }
+            window.history.pushState({}, '', novaUrl);
+        }
+
         function atualizarBotaoFiltro() {
             const valor = input.value.trim();
             const filtroAtivo = valor.length >= 3;
@@ -63,7 +75,7 @@
             if (!controller || !tabelaId) return;
 
             await buscarDadosAjax(controller, "", 1, tabelaId);
-            window.history.pushState({}, '', `/${controller}`);
+            atualizarUrlNavegador(controller)
         }
 
         function filtrarComInput() {
@@ -104,9 +116,7 @@
                 filtroAnterior = filtro;
 
                 await buscarDadosAjax(controller, filtro, 1, tabelaId);
-
-                const novaUrl = `/${controller}?pagina=1&filtro=${encodeURIComponent(filtro)}`;
-                window.history.pushState({}, '', novaUrl);
+                atualizarUrlNavegador(controller, 1, filtro);
             }, 300);
         }
 
@@ -143,14 +153,9 @@
         const controller = dadosPaginacao.getAttribute("data-controller");
         const tabelaId = dadosPaginacao.getAttribute("data-tabela-id");
 
-        if (pagina === 1 || (filtro && filtro.trim().length > 0 && totalPaginas === 1)) {
-            e.preventDefault();
-            return;
-        }
-
         e.preventDefault();
         buscarDadosAjax(controller, filtro, pagina, tabelaId);
-        window.history.pushState({}, '', `/${controller}?pagina=${pagina}&filtro=${encodeURIComponent(filtro)}`);
+        atualizarUrlNavegador(controller, pagina, filtro);
 
         // Atualiza o data-pagina-atual também
         dadosPaginacao.setAttribute("data-pagina-atual", pagina);
@@ -163,12 +168,11 @@ async function buscarDadosAjax(controller, filtro = "", pagina = 1, tabelaId) {
 
         const response = await fetch(`/${controller}/BuscarAjax?filtro=${encodeURIComponent(filtro)}&page=${pagina}`);
         if (!response.ok) {
-            mostrarMensagem("Erro ao buscar dados.");
+            mostrarMensagem("");
             return;
         }
 
         const resultado = await response.json();
-        console.log("Resultado da busca AJAX:", resultado); // <-- log pra debug
 
         if (tabelaId) {
             const wrapperTabela = document.getElementById(tabelaId);
@@ -192,8 +196,7 @@ async function buscarDadosAjax(controller, filtro = "", pagina = 1, tabelaId) {
             }
         }
     } catch (error) {
-        mostrarMensagem("Erro inesperado ao buscar dados.");
-        console.error(error);
+        mostrarMensagem("");
     } finally {
         esconderSpinner();
     }
