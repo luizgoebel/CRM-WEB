@@ -213,3 +213,22 @@ nav.navbar.fixed-top {
         min-height: calc(100% - 0rem)!important;
     }
 }
+
+/* ===================== Tooltip Global ===================== */
+.tooltip-amigavel.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: #f8f9fa; /* branco gelo */
+}
+
+.tooltip-amigavel .tooltip-inner {
+    background-color: #f8f9fa; /* branco gelo */
+    color: black; /* texto preto */
+    font-weight: 600;
+    font-size: 8pt;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.4rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(13, 110, 253, 0.4);
+    max-width: 200px;
+    text-align: center;
+}
+
+

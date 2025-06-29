@@ -2,21 +2,60 @@
     const filtros = document.querySelectorAll(".filtro-tabela");
 
     filtros.forEach(input => {
-        input.addEventListener("input", async function () {
-            const filtro = input.value.trim().toLowerCase();
+        let timeout = null;
+        let filtroAnterior = "";
+
+        input.addEventListener("input", function () {
+            const valorOriginal = input.value;
+            const filtro = valorOriginal.trim().toLowerCase();
             const controller = input.dataset.controller;
             const tabelaId = input.dataset.tabelaId;
-            if (!controller) return;
 
-            // Faz a busca AJAX
-            await buscarDadosAjax(controller, filtro, 1, tabelaId);
+            if (!controller || !tabelaId) return;
 
-            // Atualiza URL com filtro e página 1
-            const novaUrl = `/${controller}?pagina=1&filtro=${encodeURIComponent(filtro)}`;
-            window.history.pushState({}, '', novaUrl);
+            clearTimeout(timeout);
+
+            const soEspacos = /^\s+$/.test(valorOriginal);
+            const digitouAlgo = valorOriginal.length > 0;
+            const filtroValido = filtro.length >= 3;
+
+            // Se inválido, mostra tooltip (menos de 3 letras ou só espaços)
+            if (digitouAlgo && (soEspacos || !filtroValido)) {
+                const existente = bootstrap.Tooltip.getInstance(input);
+                if (existente) existente.dispose();
+
+                const tooltip = new bootstrap.Tooltip(input, {
+                    trigger: 'manual',
+                    customClass: 'tooltip-amigavel'
+                });
+                tooltip.show();
+
+                setTimeout(() => tooltip.hide(), 2000);
+                return;
+            }
+
+
+            // Se válido, executa busca com debounce
+            timeout = setTimeout(async function () {
+                if (filtro === filtroAnterior) return;
+
+                filtroAnterior = filtro;
+
+                await buscarDadosAjax(controller, filtro, 1, tabelaId);
+
+                const novaUrl = `/${controller}?pagina=1&filtro=${encodeURIComponent(filtro)}`;
+                window.history.pushState({}, '', novaUrl);
+            }, 300); // ajuste aqui em prod
         });
     });
+
+    // Inicializa tooltips no carregamento da página
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+        new bootstrap.Tooltip(el);
+    });
 });
+
+
 
 async function buscarDadosAjax(controller, filtro = "", pagina = 1, tabelaId) {
     try {

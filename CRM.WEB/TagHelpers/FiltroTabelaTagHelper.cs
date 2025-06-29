@@ -18,12 +18,14 @@ public class FiltroTabelaTagHelper : TagHelper
         output.Content.SetHtmlContent($@"
 <div class=""input-group w-auto"">
     <input type=""text"" 
-           class=""form-control filtro-tabela"" 
+           class=""form-control filtro-tabela""
            {idAttribute}
            placeholder=""{Placeholder}""
            data-filter=""#{TabelaId}""
            data-controller=""{Controller}""
-           data-tabela-id=""{TabelaId}"" />
+           data-tabela-id=""{TabelaId}""
+           title=""Digite pelo menos 3 caracteres para buscar"" />
 </div>");
+
     }
 }
