@@ -95,7 +95,7 @@
                 setTimeout(() => {
                     tooltip.hide();
                     input.removeAttribute("title");
-                }, 2000);
+                }, 1500);
                 return;
             }
 
@@ -123,33 +123,45 @@
     });
 
     // ===== DELEGAÇÃO DE CLIQUE NA PAGINAÇÃO =====
+    // Adiciona um listener para capturar todos os cliques no body da página
     document.body.addEventListener("click", function (e) {
+        // Procura pelo elemento de link de paginação mais próximo do alvo do clique
         const link = e.target.closest("a.page-link");
-        if (!link) return;
+        if (!link) return; // Se não for um link de paginação, não faz nada
 
+        // Obtém o atributo href do link clicado
         const href = link.getAttribute("href");
-        if (!href) return;
+        if (!href) return; // Se não houver href, não faz nada
 
+        // Extrai os parâmetros da URL (após o '?') usando URLSearchParams
         const urlParams = new URLSearchParams(href.split('?')[1]);
+        // Obtém o valor do parâmetro "pagina" da URL
         const paginaClicada = urlParams.get("pagina");
-        if (!paginaClicada) return;
+        if (!paginaClicada) return; // Se não houver página, não faz nada
 
+        // Converte o valor da página para inteiro
         const pagina = parseInt(paginaClicada, 10);
+        // Obtém o elemento que armazena os dados de paginação
         const dadosPaginacao = document.getElementById("dadosPaginacao");
-        if (!dadosPaginacao) return;
+        if (!dadosPaginacao) return; // Se não existir, não faz nada
 
+        // Recupera o filtro atual, total de páginas, controller e id da tabela dos atributos do elemento
         const filtro = dadosPaginacao.getAttribute("data-filtro");
         const totalPaginas = parseInt(dadosPaginacao.getAttribute("data-total-paginas"), 10);
         const controller = dadosPaginacao.getAttribute("data-controller");
         const tabelaId = filtros[0]?.dataset.tabelaId;
 
-        if (pagina === 1 && filtro && filtro.trim().length > 0 && totalPaginas === 1) {
+        // Impede a navegação se for a primeira página ou se houver filtro e só existir uma página
+        if (pagina === 1 || (filtro && filtro.trim().length > 0 && totalPaginas === 1)) {
             e.preventDefault();
             return;
         }
 
+        // Impede o comportamento padrão do link
         e.preventDefault();
+        // Chama a função para buscar os dados da nova página via AJAX
         buscarDadosAjax(controller, filtro, pagina, tabelaId);
+        // Atualiza a URL do navegador para refletir a nova página e filtro
         const novaUrl = `/${controller}?pagina=${pagina}&filtro=${encodeURIComponent(filtro)}`;
         window.history.pushState({}, '', novaUrl);
     });

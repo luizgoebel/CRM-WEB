@@ -6,9 +6,9 @@ namespace CRM.Web.TagHelpers;
 public class FiltroTabelaTagHelper : TagHelper
 {
     public string TabelaId { get; set; }
-    public string Placeholder { get; set; } = "Buscar...";
+    public string Placeholder { get; set; }
     public string InputId { get; set; }
-    public string Controller { get; set; }  // padrão pode ser cliente
+    public string Controller { get; set; }
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
@@ -30,8 +30,7 @@ public class FiltroTabelaTagHelper : TagHelper
                         class=""btn btn-outline-secondary btn-sm btn-limpar-filtro position-absolute""
                         style=""display:none; z-index:2; height: calc(100% - 0.5rem); padding: 0 0.5rem;""
                         data-bs-toggle=""tooltip"" 
-                        data-bs-placement=""left""
-                        title=""Limpar filtro"">
+                        data-bs-placement=""left"">
                     <i class=""fa-solid fa-filter-circle-xmark""></i>
                 </button>
             </div>
