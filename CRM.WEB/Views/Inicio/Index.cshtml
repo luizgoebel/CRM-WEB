@@ -2,86 +2,94 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<h2 class="mb-4">@ViewData["Title"]</h2>
+<h2 class="mb-3 fs-4">@ViewData["Title"]</h2>
 
-<div class="card shadow-sm h-100 d-flex flex-column">
-    <div class="card-body p-3 overflow-auto" style="min-height: 0; max-height: calc(100vh - 200px);">
+<div class="card shadow-sm h-100 d-flex flex-column" style="height: 80% !important;">
+    <div class="card-body p-3 overflow-auto" style="min-height: 0; max-height: calc(100vh - 153px);">
 
-        <!-- Título e introdução -->
-        <div class="mb-4">
-            <h4 class="fw-bold">Bem-vindo ao <span class="text-primary">CRM Web</span></h4>
-            <p class="text-muted">Visão geral do sistema e seus indicadores principais.</p>
+        <!-- Introdução -->
+        <div class="mb-3">
+            <h5 class="fw-semibold mb-1">Bem-vindo ao <span class="text-primary">CRM Web</span></h5>
+            <p class="dashboard-subtitulo mb-0">Visão geral do sistema e seus indicadores principais.</p>
         </div>
 
-        <!-- Indicadores principais -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="me-3">
-                            <i class="bi bi-people-fill fs-1 text-primary"></i>
-                        </div>
-                        <div>
-                            <h6 class="mb-1 text-muted">Clientes Ativos</h6>
-                            <h3 class="mb-0 fw-bold">1.250</h3>
-                            <small class="text-success">Atualizado hoje</small>
+        <!-- Indicadores -->
+        <div class="row g-2 mb-3">
+            <div class="col-sm-6 col-lg-4">
+                <div class="card dashboard-card">
+                    <div class="card-body d-flex align-items-center p-2">
+                        <i class="bi bi-people-fill dashboard-icon text-primary me-2"></i>
+                        <div class="dashboard-card-body">
+                            <div class="dashboard-subtitulo">Clientes Ativos</div>
+                            <div class="fw-bold fs-6 mb-0">1.250</div>
+                            <div class="text-success small">Atualizado hoje</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="me-3">
-                            <i class="bi bi-box-seam fs-1 text-success"></i>
-                        </div>
-                        <div>
-                            <h6 class="mb-1 text-muted">Produtos no Estoque</h6>
-                            <h3 class="mb-0 fw-bold">3.764</h3>
-                            <small class="text-success">Estoque atualizado</small>
+            <div class="col-sm-6 col-lg-4">
+                <div class="card dashboard-card">
+                    <div class="card-body d-flex align-items-center p-2">
+                        <i class="bi bi-box-seam dashboard-icon text-success me-2"></i>
+                        <div class="dashboard-card-body">
+                            <div class="dashboard-subtitulo">Produtos no Estoque</div>
+                            <div class="fw-bold fs-6 mb-0">3.764</div>
+                            <div class="text-success small">Estoque atualizado</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="me-3">
-                            <i class="bi bi-cart-check fs-1 text-warning"></i>
-                        </div>
-                        <div>
-                            <h6 class="mb-1 text-muted">Pedidos do Dia</h6>
-                            <h3 class="mb-0 fw-bold">128</h3>
-                            <small class="text-warning">Inclui pendências</small>
+            <div class="col-sm-6 col-lg-4">
+                <div class="card dashboard-card">
+                    <div class="card-body d-flex align-items-center p-2">
+                        <i class="bi bi-cart-check dashboard-icon text-warning me-2"></i>
+                        <div class="dashboard-card-body">
+                            <div class="dashboard-subtitulo">Pedidos do Dia</div>
+                            <div class="fw-bold fs-6 mb-0">128</div>
+                            <div class="text-warning small">Inclui pendências</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Conteúdo principal -->
-        <div class="d-flex flex-column flex-lg-row gap-4">
+        <!-- Gráfico + Atividades -->
+        <div class="d-flex flex-column flex-lg-row gap-3">
             <!-- Gráfico -->
             <div class="flex-grow-1">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-body">
-                        <h5 class="card-title mb-3">Vendas por Mês</h5>
-                        <canvas id="graficoVendas" height="250"></canvas>
+                <div class="card dashboard-card h-100">
+                    <div class="card-body p-3">
+                        <div class="dashboard-titulo">Vendas por Mês</div>
+                        <canvas id="graficoVendas" height="200"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Atividades recentes -->
-            <div style="width: 100%; max-width: 350px;">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-body">
-                        <h5 class="card-title mb-3">Atividades Recentes</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Novo pedido cadastrado - <small class="text-muted">há 5 minutos</small></li>
-                            <li class="list-group-item">Cliente "João Silva" atualizado - <small class="text-muted">há 10 minutos</small></li>
-                            <li class="list-group-item">Produto "Mouse Gamer" adicionado - <small class="text-muted">há 30 minutos</small></li>
-                            <li class="list-group-item">Backup diário realizado - <small class="text-muted">há 1 hora</small></li>
-                        </ul>
+            <!-- Atividades -->
+            <div style="width: 100%; max-width: 320px;">
+                <div class="card dashboard-card h-100">
+                    <div class="card-header py-2 px-3 bg-white border-bottom" style="font-weight: 600; font-size: 0.95rem;">
+                        Atividades Recentes
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="dashboard-atividades">
+                            <div class="item">
+                                <div class="descricao">Novo pedido cadastrado</div>
+                                <div class="tempo">há 5 min</div>
+                            </div>
+                            <div class="item">
+                                <div class="descricao">Cliente "João Silva" atualizado</div>
+                                <div class="tempo">há 10 min</div>
+                            </div>
+                            <div class="item">
+                                <div class="descricao">Produto "Mouse Gamer" adicionado</div>
+                                <div class="tempo">há 30 min</div>
+                            </div>
+                            <div class="item">
+                                <div class="descricao">Backup diário realizado</div>
+                                <div class="tempo">há 1h</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -101,7 +109,7 @@
                 datasets: [{
                     label: 'Vendas',
                     data: [120, 190, 300, 500, 200, 300],
-                    backgroundColor: 'rgba(13, 110, 253, 0.5)',
+                    backgroundColor: 'rgba(13, 110, 253, 0.4)',
                     borderColor: 'rgba(13, 110, 253, 1)',
                     borderWidth: 1
                 }]
@@ -109,16 +117,76 @@
             options: {
                 responsive: true,
                 plugins: {
-                    legend: {
-                        display: false
-                    }
+                    legend: { display: false }
                 },
                 scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                    y: { beginAtZero: true }
                 }
             }
         });
     </script>
+
+    <style>
+        /* ====== CARDS DE INDICADORES / GRÁFICO / ATIVIDADES ====== */
+        .dashboard-card {
+            padding: 0.5rem;
+            border: 1px solid #6c757d; /* borda visível, ajuste aqui (#adb5bd = mais claro, #495057 = mais escuro) */
+            border-radius: 0.5rem;
+            background-color: #fff;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+            .dashboard-card:hover {
+                box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+            }
+
+        .dashboard-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .dashboard-card-body {
+            font-size: 0.85rem;
+            line-height: 1.25;
+        }
+
+        /* ====== TÍTULOS ====== */
+        .dashboard-subtitulo {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+
+        .dashboard-titulo {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ====== ATIVIDADES ====== */
+        .dashboard-atividades .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.35rem 0;
+            font-size: 0.8rem;
+            border-bottom: 1px solid #6c757d;
+        }
+
+            .dashboard-atividades .item:last-child {
+                border-bottom: none;
+            }
+
+        .dashboard-atividades .descricao {
+            max-width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .dashboard-atividades .tempo {
+            color: #6c757d;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+    </style>
 }
