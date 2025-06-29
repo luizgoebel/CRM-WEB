@@ -208,9 +208,10 @@ nav.navbar.fixed-top {
         width: 3rem;
         height: 3rem;
     }
+
 @media (min-width: 576px) {
     .modal-dialog-centered {
-        min-height: calc(100% - 0rem)!important;
+        min-height: calc(100% - 0rem) !important;
     }
 }
 
@@ -244,8 +245,6 @@ nav.navbar.fixed-top {
     border-left-color: transparent !important;
 }
 
-
-
 /* ===================== Filtro Global ===================== */
 .btn-limpar-filtro {
     top: 50%;
@@ -254,26 +253,35 @@ nav.navbar.fixed-top {
     display: flex !important;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem; /* um pouco menor */
+    font-size: 1.2rem;
     height: calc(100% - 0.5rem);
     padding: 0;
-    cursor: default !important;
-    color: #6c757d !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     transition: none !important;
+    color: #6c757d !important;
+    cursor: default !important;
 }
 
+    .btn-limpar-filtro i {
+        font-size: inherit;
+        color: #6c757d !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* mesmo sem filtro ativo, manter cor no hover */
     .btn-limpar-filtro:hover,
     .btn-limpar-filtro:focus {
         color: #6c757d !important;
         background: transparent !important;
-        border: none !important;
         box-shadow: none !important;
         cursor: default !important;
     }
 
+    /* quando há filtro ativo */
     .btn-limpar-filtro.filtro-ativo {
         cursor: pointer !important;
         color: #0d6efd !important;
@@ -281,9 +289,9 @@ nav.navbar.fixed-top {
 
         .btn-limpar-filtro.filtro-ativo:hover,
         .btn-limpar-filtro.filtro-ativo:focus {
-            cursor: pointer !important;
             color: #0d6efd !important;
             background: transparent !important;
-            border: none !important;
             box-shadow: none !important;
+            border: none !important;
+            cursor: pointer !important;
         }
