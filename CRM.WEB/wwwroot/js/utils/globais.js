@@ -1,4 +1,16 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
+    function atualizarUrlNavegador(controller, pagina = 1, filtro = "") {
+        const filtroLimpo = filtro?.trim();
+        let novaUrl = `/${controller}`;
+        if (pagina > 1 || filtroLimpo) {
+            novaUrl += `?pagina=${pagina}`;
+            if (filtroLimpo) {
+                novaUrl += `&filtro=${encodeURIComponent(filtroLimpo)}`;
+            }
+        }
+        window.history.pushState({}, '', novaUrl);
+    }
+
     const filtros = document.querySelectorAll(".filtro-tabela");
 
     filtros.forEach(input => {
@@ -8,18 +20,6 @@
         const wrapper = input.closest(".input-group");
         const btnLimpar = wrapper?.querySelector(".btn-limpar-filtro");
         if (!btnLimpar) return;
-
-        function atualizarUrlNavegador(controller, pagina = 1, filtro = "") {
-            const filtroLimpo = filtro?.trim();
-            let novaUrl = `/${controller}`;
-            if (pagina > 1 || filtroLimpo) {
-                novaUrl += `?pagina=${pagina}`;
-                if (filtroLimpo) {
-                    novaUrl += `&filtro=${encodeURIComponent(filtroLimpo)}`;
-                }
-            }
-            window.history.pushState({}, '', novaUrl);
-        }
 
         function atualizarBotaoFiltro() {
             const valor = input.value.trim();
@@ -75,7 +75,7 @@
             if (!controller || !tabelaId) return;
 
             await buscarDadosAjax(controller, "", 1, tabelaId);
-            atualizarUrlNavegador(controller)
+            atualizarUrlNavegador(controller);
         }
 
         function filtrarComInput() {
@@ -201,7 +201,6 @@ async function buscarDadosAjax(controller, filtro = "", pagina = 1, tabelaId) {
         esconderSpinner();
     }
 }
-
 
 function mostrarSpinner() {
     const spinner = document.getElementById('spinnerGlobal');
