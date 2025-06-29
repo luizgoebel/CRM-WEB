@@ -23,8 +23,7 @@ public class FiltroTabelaTagHelper : TagHelper
            placeholder=""{Placeholder}""
            data-filter=""#{TabelaId}""
            data-controller=""{Controller}""
-           data-tabela-id=""{TabelaId}""
-           title=""Digite pelo menos 3 caracteres para buscar"" />
+           data-tabela-id=""{TabelaId}"" />
 </div>");
 
     }

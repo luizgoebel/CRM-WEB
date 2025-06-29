@@ -26,7 +26,8 @@
 
                 const tooltip = new bootstrap.Tooltip(input, {
                     trigger: 'manual',
-                    customClass: 'tooltip-amigavel'
+                    customClass: 'tooltip-amigavel',
+                    title: 'Digite pelo menos 3 caracteres para buscar'
                 });
                 tooltip.show();
 
