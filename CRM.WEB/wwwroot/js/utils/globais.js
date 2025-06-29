@@ -9,19 +9,16 @@
         const btnLimpar = wrapper?.querySelector(".btn-limpar-filtro");
         if (!btnLimpar) return;
 
-        // Atualiza visual e comportamento do botão
         function atualizarBotaoFiltro() {
             const valor = input.value.trim();
             const filtroAtivo = valor.length >= 3;
 
-            // Altera o ícone conforme há ou não filtro
             btnLimpar.innerHTML = filtroAtivo
                 ? '<i class="fa-solid fa-filter-circle-xmark"></i>'
                 : '<i class="fa-solid fa-filter"></i>';
 
             btnLimpar.style.display = "inline-flex";
 
-            // Ativa/desativa tooltip e estilo
             if (filtroAtivo) {
                 btnLimpar.classList.add("filtro-ativo");
                 btnLimpar.setAttribute("data-bs-toggle", "tooltip");
@@ -37,7 +34,6 @@
             }
         }
 
-        // Cria ou remove tooltip do botão
         function gerenciarTooltip(elemento, ativar) {
             if (ativar) {
                 if (!elemento._tooltip) {
@@ -54,7 +50,6 @@
             }
         }
 
-        // Ao clicar no botão de limpar filtro
         async function limparFiltro() {
             const valor = input.value.trim();
             if (valor.length < 3) return;
@@ -71,7 +66,6 @@
             window.history.pushState({}, '', `/${controller}`);
         }
 
-        // Ao digitar no campo de filtro
         function filtrarComInput() {
             const valorOriginal = input.value;
             const filtro = valorOriginal.trim().toLowerCase();
@@ -88,7 +82,6 @@
             const filtroValido = filtro.length >= 3;
 
             if (digitouAlgo && (soEspacos || !filtroValido)) {
-                // Mostra tooltip no input avisando da limitação de 3+ caracteres
                 const existente = bootstrap.Tooltip.getInstance(input);
                 if (existente) existente.dispose();
 
@@ -106,7 +99,6 @@
                 return;
             }
 
-            // Aplica filtro após delay (debounce)
             timeout = setTimeout(async () => {
                 if (filtro === filtroAnterior) return;
                 filtroAnterior = filtro;
@@ -118,29 +110,50 @@
             }, 300);
         }
 
-        // === Eventos ===
-
         btnLimpar.addEventListener("click", limparFiltro);
         input.addEventListener("input", filtrarComInput);
 
-        // Atualiza botão no carregamento inicial
         atualizarBotaoFiltro();
     });
 
-    // Inicializa tooltips globais nos elementos com data-bs-toggle
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
         if (!el._tooltip) {
             el._tooltip = new bootstrap.Tooltip(el);
         }
     });
+
+    // ===== DELEGAÇÃO DE CLIQUE NA PAGINAÇÃO =====
+    document.body.addEventListener("click", function (e) {
+        const link = e.target.closest("a.page-link");
+        if (!link) return;
+
+        const href = link.getAttribute("href");
+        if (!href) return;
+
+        const urlParams = new URLSearchParams(href.split('?')[1]);
+        const paginaClicada = urlParams.get("pagina");
+        if (!paginaClicada) return;
+
+        const pagina = parseInt(paginaClicada, 10);
+        const dadosPaginacao = document.getElementById("dadosPaginacao");
+        if (!dadosPaginacao) return;
+
+        const filtro = dadosPaginacao.getAttribute("data-filtro");
+        const totalPaginas = parseInt(dadosPaginacao.getAttribute("data-total-paginas"), 10);
+        const controller = dadosPaginacao.getAttribute("data-controller");
+        const tabelaId = filtros[0]?.dataset.tabelaId;
+
+        if (pagina === 1 && filtro && filtro.trim().length > 0 && totalPaginas === 1) {
+            e.preventDefault();
+            return;
+        }
+
+        e.preventDefault();
+        buscarDadosAjax(controller, filtro, pagina, tabelaId);
+        const novaUrl = `/${controller}?pagina=${pagina}&filtro=${encodeURIComponent(filtro)}`;
+        window.history.pushState({}, '', novaUrl);
+    });
 });
-
-
-
-
-
-
-
 
 async function buscarDadosAjax(controller, filtro = "", pagina = 1, tabelaId) {
     try {
@@ -148,7 +161,7 @@ async function buscarDadosAjax(controller, filtro = "", pagina = 1, tabelaId) {
 
         const response = await fetch(`/${controller}/BuscarAjax?filtro=${encodeURIComponent(filtro)}&pagina=${pagina}`);
         if (!response.ok) {
-            mostrarMensagem("");
+            mostrarMensagem("Erro ao buscar dados.");
             return;
         }
 
@@ -165,8 +178,19 @@ async function buscarDadosAjax(controller, filtro = "", pagina = 1, tabelaId) {
         if (wrapperPaginacao && resultado.paginacaoHtml) {
             wrapperPaginacao.innerHTML = resultado.paginacaoHtml;
         }
+
+        const dadosPaginacao = document.getElementById("dadosPaginacao");
+        if (dadosPaginacao) {
+            dadosPaginacao.setAttribute("data-filtro", filtro);
+            dadosPaginacao.setAttribute("data-controller", controller);
+            dadosPaginacao.setAttribute("data-pagina-atual", pagina);
+            if (resultado.totalPaginas) {
+                dadosPaginacao.setAttribute("data-total-paginas", resultado.totalPaginas);
+            }
+        }
     } catch (error) {
-        mostrarMensagem("");
+        mostrarMensagem("Erro inesperado ao buscar dados.");
+        console.error(error);
     } finally {
         esconderSpinner();
     }
