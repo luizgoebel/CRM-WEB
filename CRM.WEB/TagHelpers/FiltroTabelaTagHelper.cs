@@ -27,7 +27,7 @@ public class FiltroTabelaTagHelper : TagHelper
                data-tabela-id=""{TabelaId}"" />
         
         <button type=""button"" 
-                class=""btn btn-outline-secondary btn-sm btn-limpar-filtro position-absolute end-0 top-50 translate-middle-y me-2""
+                class=""btn btn-outline-secondary btn-sm btn-limpar-filtro position-absolute""
                 style=""display:none; z-index:2; height: calc(100% - 0.5rem); padding: 0 0.5rem;""
                 data-bs-toggle=""tooltip"" 
                 data-bs-placement=""left""
@@ -36,6 +36,7 @@ public class FiltroTabelaTagHelper : TagHelper
         </button>
     </div>
 </div>");
+
 
 
     }

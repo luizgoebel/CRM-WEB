@@ -7,13 +7,56 @@
 
         const wrapper = input.closest(".input-group");
         const btnLimpar = wrapper?.querySelector(".btn-limpar-filtro");
-
         if (!btnLimpar) return;
 
+        // Função para atualizar estado do botão
+        function atualizarBotao() {
+            const valor = input.value.trim();
+            const filtroAtivo = valor.length >= 3;
+
+            // Troca ícone conforme filtro ativo
+            btnLimpar.innerHTML = filtroAtivo
+                ? '<i class="fa-solid fa-filter-circle-xmark"></i>'
+                : '<i class="fa-solid fa-filter"></i>';
+
+            // Mostra o botão SEMPRE, só muda se quiser esconder, mas no seu pedido é sempre visível
+            btnLimpar.style.display = "inline-flex";
+
+            // Controla cursor e classe para estilos
+            if (filtroAtivo) {
+                btnLimpar.classList.add("filtro-ativo");
+                btnLimpar.setAttribute("data-bs-toggle", "tooltip");
+                btnLimpar.setAttribute("data-bs-placement", "left");
+                btnLimpar.setAttribute("title", "Limpar filtro");
+                if (!btnLimpar._tooltip) {
+                    btnLimpar._tooltip = new bootstrap.Tooltip(btnLimpar, {
+                        customClass: "tooltip-amigavel",
+                        trigger: "hover focus"
+                    });
+                }
+            } else {
+                btnLimpar.classList.remove("filtro-ativo");
+                btnLimpar.removeAttribute("data-bs-toggle");
+                btnLimpar.removeAttribute("data-bs-placement");
+                btnLimpar.removeAttribute("title");
+                if (btnLimpar._tooltip) {
+                    btnLimpar._tooltip.dispose();
+                    btnLimpar._tooltip = null;
+                }
+            }
+        }
+
+        // Clique só limpa filtro se tiver filtro ativo
         btnLimpar.addEventListener("click", async function () {
+            const valor = input.value.trim();
+            if (valor.length < 3) {
+                // Não faz nada se não tiver filtro válido
+                return;
+            }
+
             input.value = "";
             filtroAnterior = "";
-            btnLimpar.style.display = "none";
+            atualizarBotao();
 
             const controller = input.dataset.controller;
             const tabelaId = input.dataset.tabelaId;
@@ -23,6 +66,7 @@
             window.history.pushState({}, '', `/${controller}`);
         });
 
+        // Input event
         input.addEventListener("input", function () {
             const valorOriginal = input.value;
             const filtro = valorOriginal.trim().toLowerCase();
@@ -37,8 +81,7 @@
             const digitouAlgo = valorOriginal.length > 0;
             const filtroValido = filtro.length >= 3;
 
-            // Mostra/oculta botão limpar
-            btnLimpar.style.display = filtroValido ? "inline-block" : "none";
+            atualizarBotao();
 
             if (digitouAlgo && (soEspacos || !filtroValido)) {
                 const existente = bootstrap.Tooltip.getInstance(input);
@@ -70,13 +113,19 @@
                 window.history.pushState({}, '', novaUrl);
             }, 300);
         });
+
+        // Inicializa estado do botão no load
+        atualizarBotao();
     });
 
-    // Inicializa tooltips
+    // Inicializa tooltips em outros elementos
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
-        new bootstrap.Tooltip(el);
+        if (!el._tooltip) {
+            el._tooltip = new bootstrap.Tooltip(el);
+        }
     });
 });
+
 
 
 
