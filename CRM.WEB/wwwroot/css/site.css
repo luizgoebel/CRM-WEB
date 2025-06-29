@@ -257,7 +257,7 @@ nav.navbar.fixed-top {
     font-size: 1.2rem; /* um pouco menor */
     height: calc(100% - 0.5rem);
     padding: 0;
-    cursor: default;
+    cursor: default !important;
     color: #6c757d !important;
     background: transparent !important;
     border: none !important;
@@ -271,15 +271,17 @@ nav.navbar.fixed-top {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
+        cursor: default !important;
     }
 
     .btn-limpar-filtro.filtro-ativo {
-        cursor: pointer;
+        cursor: pointer !important;
         color: #0d6efd !important;
     }
 
         .btn-limpar-filtro.filtro-ativo:hover,
         .btn-limpar-filtro.filtro-ativo:focus {
+            cursor: pointer !important;
             color: #0d6efd !important;
             background: transparent !important;
             border: none !important;
