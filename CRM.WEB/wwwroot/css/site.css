@@ -249,16 +249,19 @@ nav.navbar.fixed-top {
 /* ===================== Filtro Global ===================== */
 .btn-limpar-filtro {
     top: 50%;
-    right: 0.5rem; /* ajusta conforme quiser o espaçamento */
+    right: 0.5rem;
     transform: translateY(-50%);
     display: flex !important;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem; /* tamanho do ícone */
+    font-size: 1.2rem; /* um pouco menor */
     height: calc(100% - 0.5rem);
-    padding: 0 0.5rem;
+    padding: 0;
     cursor: default;
     color: #6c757d !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     transition: none !important;
 }
 
@@ -266,8 +269,8 @@ nav.navbar.fixed-top {
     .btn-limpar-filtro:focus {
         color: #6c757d !important;
         background: transparent !important;
+        border: none !important;
         box-shadow: none !important;
-        transition: none !important;
     }
 
     .btn-limpar-filtro.filtro-ativo {
@@ -279,7 +282,6 @@ nav.navbar.fixed-top {
         .btn-limpar-filtro.filtro-ativo:focus {
             color: #0d6efd !important;
             background: transparent !important;
+            border: none !important;
             box-shadow: none !important;
-            transition: none !important;
         }
-
