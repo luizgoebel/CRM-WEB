@@ -1,0 +1,18 @@
+﻿@using CRM.Web.Models
+@model List<PedidoViewModel>
+
+@foreach (var pedido in Model)
+{
+    <tr>
+        <td>@pedido.Cliente</td>
+        <td>@pedido.ValorTotal.ToString()</td>
+        <td class="acao">
+            <button type="button" class="btn btn-warning btn-sm me-1" title="Editar" onclick="abrirModalPedido(@pedido.Id, false)">
+                <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-info btn-sm" title="Visualizar" onclick="abrirModalPedido(@pedido.Id, true)">
+                <i class="bi bi-eye"></i>
+            </button>
+        </td>
+    </tr>
+}

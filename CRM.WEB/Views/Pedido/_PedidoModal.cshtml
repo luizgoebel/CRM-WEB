@@ -1,0 +1,46 @@
+﻿@model CRM.Web.Models.PedidoViewModel
+@{
+    bool somenteLeitura = ViewBag.SomenteLeitura ?? false;
+}
+
+<form id="formPedidoModal" method="post" action="/Pedido/SalvarPedido" draggable="false">
+    <input type="hidden" name="Id" value="@Model?.Id" />
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="cliente" class="form-label">Cliente:</label>
+                <select class="form-select" id="cliente" name="ClienteId" @(somenteLeitura ? "disabled" : "")>
+                    <option value="">Selecione um cliente</option>
+                    <!-- Clientes serão carregados dinamicamente via JS, ou mockados se necessário -->
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Itens do Pedido:</label>
+                <div id="listaItensPedido">
+                    <!-- Itens serão adicionados dinamicamente via JS -->
+                </div>
+                @if (!somenteLeitura)
+                {
+                    <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="adicionarItemPedido()">
+                        <i class="bi bi-plus-circle"></i> Adicionar Item
+                    </button>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Valor Total:</label>
+                <input type="text" class="form-control" value="@Model.ValorTotal?.ToString("C")" readonly />
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+        <button type="button" class="btn btn-sm btn-danger btn-igual" data-bs-dismiss="modal">Fechar</button>
+        @if (!somenteLeitura)
+        {
+            <button type="button" class="btn btn-sm btn-success btn-igual" onclick="salvarPedido()">Salvar</button>
+        }
+    </div>
+</form>
