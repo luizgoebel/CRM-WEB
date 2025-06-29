@@ -9,54 +9,59 @@
         const btnLimpar = wrapper?.querySelector(".btn-limpar-filtro");
         if (!btnLimpar) return;
 
-        // Função para atualizar estado do botão
-        function atualizarBotao() {
+        // Atualiza visual e comportamento do botão
+        function atualizarBotaoFiltro() {
             const valor = input.value.trim();
             const filtroAtivo = valor.length >= 3;
 
-            // Troca ícone conforme filtro ativo
+            // Altera o ícone conforme há ou não filtro
             btnLimpar.innerHTML = filtroAtivo
                 ? '<i class="fa-solid fa-filter-circle-xmark"></i>'
                 : '<i class="fa-solid fa-filter"></i>';
 
-            // Mostra o botão SEMPRE, só muda se quiser esconder, mas no seu pedido é sempre visível
             btnLimpar.style.display = "inline-flex";
 
-            // Controla cursor e classe para estilos
+            // Ativa/desativa tooltip e estilo
             if (filtroAtivo) {
                 btnLimpar.classList.add("filtro-ativo");
                 btnLimpar.setAttribute("data-bs-toggle", "tooltip");
                 btnLimpar.setAttribute("data-bs-placement", "left");
                 btnLimpar.setAttribute("title", "Limpar filtro");
-                if (!btnLimpar._tooltip) {
-                    btnLimpar._tooltip = new bootstrap.Tooltip(btnLimpar, {
-                        customClass: "tooltip-amigavel",
-                        trigger: "hover focus"
-                    });
-                }
+                gerenciarTooltip(btnLimpar, true);
             } else {
                 btnLimpar.classList.remove("filtro-ativo");
                 btnLimpar.removeAttribute("data-bs-toggle");
                 btnLimpar.removeAttribute("data-bs-placement");
                 btnLimpar.removeAttribute("title");
-                if (btnLimpar._tooltip) {
-                    btnLimpar._tooltip.dispose();
-                    btnLimpar._tooltip = null;
+                gerenciarTooltip(btnLimpar, false);
+            }
+        }
+
+        // Cria ou remove tooltip do botão
+        function gerenciarTooltip(elemento, ativar) {
+            if (ativar) {
+                if (!elemento._tooltip) {
+                    elemento._tooltip = new bootstrap.Tooltip(elemento, {
+                        customClass: "tooltip-amigavel",
+                        trigger: "hover focus"
+                    });
+                }
+            } else {
+                if (elemento._tooltip) {
+                    elemento._tooltip.dispose();
+                    elemento._tooltip = null;
                 }
             }
         }
 
-        // Clique só limpa filtro se tiver filtro ativo
-        btnLimpar.addEventListener("click", async function () {
+        // Ao clicar no botão de limpar filtro
+        async function limparFiltro() {
             const valor = input.value.trim();
-            if (valor.length < 3) {
-                // Não faz nada se não tiver filtro válido
-                return;
-            }
+            if (valor.length < 3) return;
 
             input.value = "";
             filtroAnterior = "";
-            atualizarBotao();
+            atualizarBotaoFiltro();
 
             const controller = input.dataset.controller;
             const tabelaId = input.dataset.tabelaId;
@@ -64,10 +69,10 @@
 
             await buscarDadosAjax(controller, "", 1, tabelaId);
             window.history.pushState({}, '', `/${controller}`);
-        });
+        }
 
-        // Input event
-        input.addEventListener("input", function () {
+        // Ao digitar no campo de filtro
+        function filtrarComInput() {
             const valorOriginal = input.value;
             const filtro = valorOriginal.trim().toLowerCase();
             const controller = input.dataset.controller;
@@ -76,19 +81,18 @@
             if (!controller || !tabelaId) return;
 
             clearTimeout(timeout);
+            atualizarBotaoFiltro();
 
             const soEspacos = /^\s+$/.test(valorOriginal);
             const digitouAlgo = valorOriginal.length > 0;
             const filtroValido = filtro.length >= 3;
 
-            atualizarBotao();
-
             if (digitouAlgo && (soEspacos || !filtroValido)) {
+                // Mostra tooltip no input avisando da limitação de 3+ caracteres
                 const existente = bootstrap.Tooltip.getInstance(input);
                 if (existente) existente.dispose();
 
                 input.setAttribute("title", "Digite pelo menos 3 caracteres para buscar");
-
                 const tooltip = new bootstrap.Tooltip(input, {
                     trigger: 'manual',
                     customClass: 'tooltip-amigavel'
@@ -102,9 +106,9 @@
                 return;
             }
 
-            timeout = setTimeout(async function () {
+            // Aplica filtro após delay (debounce)
+            timeout = setTimeout(async () => {
                 if (filtro === filtroAnterior) return;
-
                 filtroAnterior = filtro;
 
                 await buscarDadosAjax(controller, filtro, 1, tabelaId);
@@ -112,19 +116,25 @@
                 const novaUrl = `/${controller}?pagina=1&filtro=${encodeURIComponent(filtro)}`;
                 window.history.pushState({}, '', novaUrl);
             }, 300);
-        });
+        }
 
-        // Inicializa estado do botão no load
-        atualizarBotao();
+        // === Eventos ===
+
+        btnLimpar.addEventListener("click", limparFiltro);
+        input.addEventListener("input", filtrarComInput);
+
+        // Atualiza botão no carregamento inicial
+        atualizarBotaoFiltro();
     });
 
-    // Inicializa tooltips em outros elementos
+    // Inicializa tooltips globais nos elementos com data-bs-toggle
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
         if (!el._tooltip) {
             el._tooltip = new bootstrap.Tooltip(el);
         }
     });
 });
+
 
 
 
