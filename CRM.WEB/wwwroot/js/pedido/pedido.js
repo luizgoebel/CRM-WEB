@@ -33,3 +33,31 @@
         }
     });
 }
+
+function excluirProduto(id) {
+    confirmarAcao("Tem certeza que deseja excluir este produto?", function (confirmado) {
+        if (!confirmado) return;
+
+        $.ajax({
+            url: `/Pedido/ExcluirPedido`,
+            type: 'POST',
+            data: { idPedido: id },
+            beforeSend: function () {
+                mostrarSpinner();
+            },
+            success: function (response) {
+                if (response?.contemErro) {
+                    mostrarMensagem(response.mensagem);
+                    esconderSpinner();
+                    return;
+                }
+                esconderSpinner();
+                location.reload();
+            },
+            error: function () {
+                mostrarMensagem("");
+                esconderSpinner();
+            }
+        });
+    });
+}

@@ -17,6 +17,12 @@ public class PedidoServiceClient : IPedidoServiceClient
         this._httpClient = httpClient;
     }
 
+    public async Task ExcluirPedido(int idPedido)
+    {
+        HttpResponseMessage response = await _httpClient.PostAsync($"api/Pedido/Remover?id={idPedido}", null);
+        await TrataExcecao.TratarResponseException(response);
+    }
+
     public async Task<PaginacaoResultado<PedidoViewModel>> ObterPedidosPaginados(string filtro, int pagina, int pageSize)
     {
         HttpResponseMessage response = await _httpClient.GetAsync(

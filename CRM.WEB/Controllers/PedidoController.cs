@@ -103,4 +103,22 @@ public class PedidoController : Controller
             return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
         }
     }
+
+    public async Task<JsonResult> ExcluirPedido(int idPedido)
+    {
+        try
+        {
+            await this._pedidoServiceClient.ExcluirPedido(idPedido);
+
+            return GerenciadorRespostaJSON.create();
+        }
+        catch (DomainException ex)
+        {
+            return GerenciadorRespostaJSON.create(ex.Message, true);
+        }
+        catch (Exception ex)
+        {
+            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+        }
+    }
 }
