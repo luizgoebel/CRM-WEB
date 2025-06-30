@@ -42,6 +42,10 @@ public class Startup
         {
             client.BaseAddress = crmApiBaseAddress;
         });
+        services.AddHttpClient<IPedidoServiceClient, PedidoServiceClient>(client =>
+        {
+            client.BaseAddress = crmApiBaseAddress;
+        });
 
         AdicionarMinificacao(services);
     }

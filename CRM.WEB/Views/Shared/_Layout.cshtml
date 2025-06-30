@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/cliente.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/produto.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pedido.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CRM.WEB.styles.css" asp-append-version="true" />
 </head>
 <body class="d-flex flex-column min-vh-100 overflow-hidden">
@@ -84,6 +85,7 @@
     <!-- Modal genérico (idModal, titulo,bodyId) -->
     @await Html.PartialAsync("_ModalGenerico", ("clienteModal", "Cadastrar Cliente", "clienteModalBody"))
     @await Html.PartialAsync("_ModalGenerico", ("produtoModal", "Cadastrar Produto", "produtoModalBody"))
+    @await Html.PartialAsync("_ModalGenerico", ("pedidoModal", "Cadastrar Pedido", "pedidoModalBody"))
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -91,6 +93,7 @@
     <script src="~/js/utils/globais.js"></script>
     <script src="~/js/cliente/cliente.js"></script>
     <script src="~/js/produto/produto.js"></script>
+    <script src="~/js/pedido/pedido.js"></script>
 
     <script>
         $("#menu-toggle").click(function () {
