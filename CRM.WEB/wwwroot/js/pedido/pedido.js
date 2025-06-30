@@ -2,40 +2,40 @@
 let produtosDisponiveis = [];
 let clientesDisponiveis = [];
 
-// Função principal para inicializar o modal de pedido
-function inicializarModalPedido() {
-    carregarDadosPedido()
-        .then(() => {
-            preencherSelectClientes();
-            carregarItensExistentes();
-            calcularTotalPedido();
-        })
-        .catch(() => mostrarMensagem(""));
+/**
+ * Função principal para inicializar o modal de pedido
+ */
+async function inicializarModalPedido() {
+    try {
+        await carregarDadosPedido();
+        preencherSelectClientes();
+        carregarItensExistentes();
+        calcularTotalPedido();
+    } catch {
+        mostrarMensagem("");
+    }
 }
 
-// Busca os dados de produtos e clientes da API
+/**
+ * Busca os dados de produtos e clientes da API
+ */
 async function carregarDadosPedido() {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url: '/Pedido/PreencherModalPedido',
-            type: "GET",
-            beforeSend: mostrarSpinner,
-            success: function (data) {
-                produtosDisponiveis = data.produtos || [];
-                clientesDisponiveis = data.clientes || [];
-                esconderSpinner();
-                resolve();
-            },
-            error: function (xhr, status, error) {
-                mostrarMensagem("")
-                esconderSpinner();
-                reject(error);
-            }
-        });
-    });
+    mostrarSpinner();
+    try {
+        const response = await fetch('/Pedido/PreencherModalPedido');
+        if (!response.ok) mostrarMensagem("");
+        const data = await response.json();
+
+        produtosDisponiveis = data.produtos || [];
+        clientesDisponiveis = data.clientes || [];
+    } finally {
+        esconderSpinner();
+    }
 }
 
-// Preenche o select de clientes
+/**
+ * Preenche o select de clientes
+ */
 function preencherSelectClientes() {
     const selectCliente = document.getElementById("cliente");
     if (!selectCliente) return;
@@ -52,7 +52,9 @@ function preencherSelectClientes() {
     });
 }
 
-// Adiciona um item ao pedido
+/**
+ * Adiciona um item ao pedido
+ */
 function adicionarItemPedido(item = null) {
     const container = document.getElementById("listaItensPedido");
     if (!container) return;
@@ -93,7 +95,9 @@ function adicionarItemPedido(item = null) {
     selectProduto.dispatchEvent(new Event("change"));
 }
 
-// Remove item do pedido
+/**
+ * Remove item do pedido
+ */
 function removerItemPedido(botao) {
     const row = botao.closest(".row");
     if (row) {
@@ -102,7 +106,9 @@ function removerItemPedido(botao) {
     }
 }
 
-// Listeners do item
+/**
+ * Listeners do item
+ */
 function adicionarListenersAoItem(row) {
     const produtoSelect = row.querySelector(".produto-select");
     const quantidadeInput = row.querySelector(".quantidade-input");
@@ -126,7 +132,9 @@ function adicionarListenersAoItem(row) {
     });
 }
 
-// Carrega itens do pedido (modo edição)
+/**
+ * Carrega itens do pedido (modo edição)
+ */
 function carregarItensExistentes() {
     const hidden = document.getElementById("itensPedidoJson");
     if (!hidden || !hidden.value) return;
@@ -146,10 +154,10 @@ function carregarItensExistentes() {
     }));
 }
 
-// Soma total do pedido
+/**
+ * Soma total do pedido
+ */
 function calcularTotalPedido() {
-    console.log("Recalculando total...");
-
     let total = 0;
 
     document.querySelectorAll("#listaItensPedido .row").forEach(row => {
@@ -164,36 +172,40 @@ function calcularTotalPedido() {
     }
 }
 
-// Abre o modal de pedido
-function abrirModalPedido(id, somenteVisualizacao) {
-    let url = '/Pedido/PedidoModal';
-    url += id ? `?id=${id}&somenteVisualizacao=${somenteVisualizacao}` : `?somenteVisualizacao=${somenteVisualizacao}`;
+/**
+ * Abre o modal de pedido (async/await, spinner até tudo pronto)
+ */
+async function abrirModalPedido(id, somenteVisualizacao) {
+    mostrarSpinner();
 
-    $.ajax({
-        url: url,
-        type: 'GET',
-        beforeSend: mostrarSpinner,
-        success: function (response) {
-            if (response?.contemErro) {
-                mostrarMensagem(response.mensagem);
-                esconderSpinner();
-                return;
-            }
+    try {
+        let url = '/Pedido/PedidoModal';
+        url += id ? `?id=${id}&somenteVisualizacao=${somenteVisualizacao}` : `?somenteVisualizacao=${somenteVisualizacao}`;
 
-            $('#pedidoModalBody').html(response);
-            $('#pedidoModal').modal({ backdrop: 'static', keyboard: false });
-            esconderSpinner();
-            $('#pedidoModal').modal('show');
-            inicializarModalPedido();
-        },
-        error: function () {
-            mostrarMensagem("");
-            esconderSpinner();
-        }
-    });
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Erro ao carregar modal");
+
+        const html = await response.text();
+
+        // Injeta o HTML do modal
+        document.getElementById('pedidoModalBody').innerHTML = html;
+
+        // Inicializa os dados (produtos, clientes, itens)
+        await inicializarModalPedido();
+
+        // Configura e mostra o modal só depois que tudo estiver pronto
+        $('#pedidoModal').modal({ backdrop: 'static', keyboard: false });
+        $('#pedidoModal').modal('show');
+    } catch (error) {
+        mostrarMensagem("");
+    } finally {
+        esconderSpinner();
+    }
 }
 
-// Exclui pedido
+/**
+ * Exclui pedido
+ */
 function excluirPedido(id) {
     confirmarAcao("Tem certeza que deseja excluir este pedido?", function (confirmado) {
         if (!confirmado) return;
