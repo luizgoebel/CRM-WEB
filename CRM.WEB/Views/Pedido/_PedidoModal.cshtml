@@ -34,7 +34,8 @@
 
             <div class="mb-3">
                 <label class="form-label">Valor Total:</label>
-                <input type="text" class="form-control" value="@Model.ValorTotal?.ToString("C")" readonly />
+                <input type="text" id="valorTotalPedido" class="form-control" value="@Model.ValorTotal?.ToString("C")" readonly />
+
             </div>
         </div>
     </div>
@@ -47,6 +48,4 @@
         }
     </div>
     <input type="hidden" id="itensPedidoJson" value='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Itens))' />
-    @* <input type="text" class="form-control" value="@Model.ValorTotal?.ToString("C")" readonly /> *@
-
 </form>

@@ -2,9 +2,7 @@
 let produtosDisponiveis = [];
 let clientesDisponiveis = [];
 
-/**
- * Função principal para inicializar o modal de pedido
- */
+// Função principal para inicializar o modal de pedido
 function inicializarModalPedido() {
     carregarDadosPedido()
         .then(() => {
@@ -12,12 +10,10 @@ function inicializarModalPedido() {
             carregarItensExistentes();
             calcularTotalPedido();
         })
-        .catch(() => mostrarMensagem("Erro ao carregar dados do pedido."));
+        .catch(() => mostrarMensagem(""));
 }
 
-/**
- * Busca os dados de produtos e clientes da API
- */
+// Busca os dados de produtos e clientes da API
 async function carregarDadosPedido() {
     return new Promise((resolve, reject) => {
         $.ajax({
@@ -31,7 +27,7 @@ async function carregarDadosPedido() {
                 resolve();
             },
             error: function (xhr, status, error) {
-                console.error("Erro ao carregar dados do pedido:", error);
+                mostrarMensagem("")
                 esconderSpinner();
                 reject(error);
             }
@@ -39,9 +35,7 @@ async function carregarDadosPedido() {
     });
 }
 
-/**
- * Preenche o select de clientes
- */
+// Preenche o select de clientes
 function preencherSelectClientes() {
     const selectCliente = document.getElementById("cliente");
     if (!selectCliente) return;
@@ -58,9 +52,7 @@ function preencherSelectClientes() {
     });
 }
 
-/**
- * Adiciona um item ao pedido
- */
+// Adiciona um item ao pedido
 function adicionarItemPedido(item = null) {
     const container = document.getElementById("listaItensPedido");
     if (!container) return;
@@ -80,11 +72,11 @@ function adicionarItemPedido(item = null) {
             </select>
         </div>
         <div class="col-2">
-            <input type="number" name="Itens[${index}].Quantidade" class="form-control quantidade-input" min="1" value="${item?.Quantidade || 1}" />
+            <input type="number" name="Itens[${index}].Quantidade" class="form-control quantidade-input" min="1" value="${item?.quantidade || 1}" />
         </div>
         <div class="col-3">
             <input type="text" class="form-control preco-unitario-input" readonly />
-            <input type="hidden" name="Itens[${index}].PrecoUnitario" class="preco-hidden" value="${item?.PrecoUnitario || 0}" />
+            <input type="hidden" name="Itens[${index}].PrecoUnitario" class="preco-hidden" value="${item?.precoUnitario || 0}" />
         </div>
         <div class="col-2 d-flex align-items-center">
             <button type="button" class="btn btn-sm btn-outline-danger" onclick="removerItemPedido(this)">
@@ -96,13 +88,12 @@ function adicionarItemPedido(item = null) {
     container.appendChild(div);
     adicionarListenersAoItem(div);
 
+    // Atualiza preço e total ao adicionar
     const selectProduto = div.querySelector(".produto-select");
     selectProduto.dispatchEvent(new Event("change"));
 }
 
-/**
- * Remove item do pedido
- */
+// Remove item do pedido
 function removerItemPedido(botao) {
     const row = botao.closest(".row");
     if (row) {
@@ -111,9 +102,7 @@ function removerItemPedido(botao) {
     }
 }
 
-/**
- * Listeners do item
- */
+// Listeners do item
 function adicionarListenersAoItem(row) {
     const produtoSelect = row.querySelector(".produto-select");
     const quantidadeInput = row.querySelector(".quantidade-input");
@@ -137,9 +126,7 @@ function adicionarListenersAoItem(row) {
     });
 }
 
-/**
- * Carrega itens do pedido (modo edição)
- */
+// Carrega itens do pedido (modo edição)
 function carregarItensExistentes() {
     const hidden = document.getElementById("itensPedidoJson");
     if (!hidden || !hidden.value) return;
@@ -148,7 +135,7 @@ function carregarItensExistentes() {
     try {
         itens = JSON.parse(hidden.value);
     } catch (error) {
-        console.error("Erro ao parsear itens do pedido:", error);
+        mostrarMensagem("");
         return;
     }
 
@@ -159,10 +146,10 @@ function carregarItensExistentes() {
     }));
 }
 
-/**
- * Soma total do pedido
- */
+// Soma total do pedido
 function calcularTotalPedido() {
+    console.log("Recalculando total...");
+
     let total = 0;
 
     document.querySelectorAll("#listaItensPedido .row").forEach(row => {
@@ -171,15 +158,13 @@ function calcularTotalPedido() {
         total += preco * quantidade;
     });
 
-    const inputTotal = document.querySelector("input[readonly]");
+    const inputTotal = document.getElementById("valorTotalPedido");
     if (inputTotal) {
         inputTotal.value = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     }
 }
 
-/**
- * Abre o modal de pedido
- */
+// Abre o modal de pedido
 function abrirModalPedido(id, somenteVisualizacao) {
     let url = '/Pedido/PedidoModal';
     url += id ? `?id=${id}&somenteVisualizacao=${somenteVisualizacao}` : `?somenteVisualizacao=${somenteVisualizacao}`;
@@ -202,15 +187,13 @@ function abrirModalPedido(id, somenteVisualizacao) {
             inicializarModalPedido();
         },
         error: function () {
-            mostrarMensagem("Erro ao carregar modal de pedido.");
+            mostrarMensagem("");
             esconderSpinner();
         }
     });
 }
 
-/**
- * Exclui pedido
- */
+// Exclui pedido
 function excluirPedido(id) {
     confirmarAcao("Tem certeza que deseja excluir este pedido?", function (confirmado) {
         if (!confirmado) return;
@@ -230,7 +213,7 @@ function excluirPedido(id) {
                 location.reload();
             },
             error: function () {
-                mostrarMensagem("Erro ao excluir pedido.");
+                mostrarMensagem("");
                 esconderSpinner();
             }
         });
