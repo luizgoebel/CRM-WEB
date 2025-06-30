@@ -1,10 +1,12 @@
 ﻿using CRM.Web.Exceptions;
 using CRM.Web.Models;
+using CRM.Web.ServiceClient;
 using CRM.Web.ServiceClient.IServiceClient;
 using CRM.Web.TagHelpers;
 using CRM.Web.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CRM.WEB.Controllers;
@@ -12,11 +14,19 @@ namespace CRM.WEB.Controllers;
 public class PedidoController : Controller
 {
     private readonly IPedidoServiceClient _pedidoServiceClient;
+    private readonly IProdutoServiceClient _produtoServiceClient;
+    private readonly IClienteServiceClient _clienteServiceClient;
     private readonly RazorViewToStringRenderer _renderer;
 
-    public PedidoController(IPedidoServiceClient pedidoServiceClient, RazorViewToStringRenderer renderer)
+    public PedidoController(
+        IPedidoServiceClient pedidoServiceClient, 
+        RazorViewToStringRenderer renderer, 
+        IProdutoServiceClient produtoServiceClient, 
+        IClienteServiceClient clienteServiceClient)
     {
         this._pedidoServiceClient = pedidoServiceClient;
+        this._produtoServiceClient = produtoServiceClient;
+        this._clienteServiceClient = clienteServiceClient;
         this._renderer = renderer;
     }
 
@@ -80,6 +90,15 @@ public class PedidoController : Controller
         {
             return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> PreencherModalPedido()
+    {
+        List<ProdutoViewModel> produtos = await _produtoServiceClient.ObterTodosProdutos();
+        List<ClienteViewModel> clientes = await _clienteServiceClient.ObterTodosClientes();
+
+        return Json(new { produtos = produtos, clientes = clientes });
     }
 
     public async Task<IActionResult> PedidoModal(int? id, bool somenteVisualizacao = false)

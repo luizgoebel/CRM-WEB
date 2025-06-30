@@ -5,6 +5,7 @@ using CRM.Web.TagHelpers;
 using CRM.Web.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CRM.Web.Controllers;
@@ -14,7 +15,9 @@ public class ProdutoController : Controller
     private readonly IProdutoServiceClient _produtoServiceClient;
     private readonly RazorViewToStringRenderer _renderer;
 
-    public ProdutoController(IProdutoServiceClient produtoServiceClient, RazorViewToStringRenderer renderer)
+    public ProdutoController(
+        IProdutoServiceClient produtoServiceClient,
+        RazorViewToStringRenderer renderer)
     {
         this._produtoServiceClient = produtoServiceClient;
         this._renderer = renderer;

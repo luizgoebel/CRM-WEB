@@ -42,7 +42,7 @@ public class ProdutoServiceClient : IProdutoServiceClient
         return resultado!;
     }
 
-    public async Task<List<ProdutoViewModel>> ObterTodosClientes()
+    public async Task<List<ProdutoViewModel>> ObterTodosProdutos()
     {
         HttpResponseMessage response = await _httpClient.GetAsync("api/Produto/ObterTodosProdutos");
         await TrataExcecao.TratarResponseException(response);

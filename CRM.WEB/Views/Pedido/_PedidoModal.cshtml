@@ -10,17 +10,20 @@
         <div class="card-body">
             <div class="mb-3">
                 <label for="cliente" class="form-label">Cliente:</label>
-                <select class="form-select" id="cliente" name="ClienteId" @(somenteLeitura ? "disabled" : "")>
+
+                <!-- clientes serão adicionados dinamicamente via JS -->
+                <select class="form-select" id="cliente" name="ClienteId" data-selected-id="@Model?.ClienteId" @(ViewBag.SomenteLeitura ? "disabled" : "")>
                     <option value="">Selecione um cliente</option>
-                    <!-- Clientes serão carregados dinamicamente via JS, ou mockados se necessário -->
                 </select>
+
+
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Itens do Pedido:</label>
-                <div id="listaItensPedido">
                     <!-- Itens serão adicionados dinamicamente via JS -->
-                </div>
+                <div id="listaItensPedido"></div>
+
                 @if (!somenteLeitura)
                 {
                     <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="adicionarItemPedido()">
@@ -43,4 +46,7 @@
             <button type="button" class="btn btn-sm btn-success btn-igual" onclick="salvarPedido()">Salvar</button>
         }
     </div>
+    <input type="hidden" id="itensPedidoJson" value='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Itens))' />
+    @* <input type="text" class="form-control" value="@Model.ValorTotal?.ToString("C")" readonly /> *@
+
 </form>
