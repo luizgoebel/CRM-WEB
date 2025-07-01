@@ -11,6 +11,7 @@ async function inicializarModalPedido() {
         preencherSelectClientes();
         carregarItensExistentes();
         calcularTotalPedido();
+        inicializarAutocompletes();
     } catch {
         mostrarMensagem("");
     }
@@ -60,46 +61,44 @@ function adicionarItemPedido(item = null) {
     if (!container) return;
 
     const index = container.children.length;
+    const produto = produtosDisponiveis.find(p => p.Id === item?.produtoId);
+    const nomeProduto = produto ? produto.Nome : "(produto removido)";
+    const preco = item?.precoUnitario || 0;
+    const quantidade = item?.quantidade || 1;
+    const subtotal = preco * quantidade;
 
-    const div = document.createElement("div");
-    div.classList.add("row", "mb-2");
-    div.innerHTML = `
-        <div class="col-5">
-            <select class="form-select produto-select" name="Itens[${index}].ProdutoId" data-index="${index}">
-                <option value="">Selecione o produto</option>
-                ${produtosDisponiveis.map(p => {
-        const selected = item && item.produtoId == p.Id ? "selected" : "";
-        return `<option value="${p.Id}" data-preco-unitario="${p.Preco ?? 0}" ${selected}>${p.Nome}</option>`;
-    }).join("")}
-            </select>
-        </div>
-        <div class="col-2">
-            <input type="number" name="Itens[${index}].Quantidade" class="form-control quantidade-input" min="1" value="${item?.quantidade || 1}" />
-        </div>
-        <div class="col-3">
-            <input type="text" class="form-control preco-unitario-input" readonly />
-            <input type="hidden" name="Itens[${index}].PrecoUnitario" class="preco-hidden" value="${item?.precoUnitario || 0}" />
-        </div>
-        <div class="col-2 d-flex align-items-center">
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+        <td>
+            ${nomeProduto}
+            <input type="hidden" name="Itens[${index}].ProdutoId" value="${item?.produtoId}" />
+            <input type="hidden" name="Itens[${index}].PrecoUnitario" value="${preco}" class="preco-hidden" />
+        </td>
+        <td>
+            <input type="number" name="Itens[${index}].Quantidade" 
+                   class="form-control form-control-sm quantidade-input" 
+                   min="1" value="${quantidade}" />
+        </td>
+        <td>${preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+        <td class="subtotal-cell">${subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+        <td class="text-center">
             <button type="button" class="btn btn-sm btn-outline-danger" onclick="removerItemPedido(this)">
                 <i class="bi bi-trash"></i>
             </button>
-        </div>
+        </td>
     `;
 
-    container.appendChild(div);
-    adicionarListenersAoItem(div);
-
-    // Atualiza preço e total ao adicionar
-    const selectProduto = div.querySelector(".produto-select");
-    selectProduto.dispatchEvent(new Event("change"));
+    container.appendChild(tr);
+    adicionarListenersAoItem(tr);
+    calcularTotalPedido();
 }
 
 /**
  * Remove item do pedido
  */
 function removerItemPedido(botao) {
-    const row = botao.closest(".row");
+    const row = botao.closest("tr");
     if (row) {
         row.remove();
         calcularTotalPedido();
@@ -110,24 +109,23 @@ function removerItemPedido(botao) {
  * Listeners do item
  */
 function adicionarListenersAoItem(row) {
-    const produtoSelect = row.querySelector(".produto-select");
     const quantidadeInput = row.querySelector(".quantidade-input");
-    const precoInput = row.querySelector(".preco-unitario-input");
     const precoHidden = row.querySelector(".preco-hidden");
+    const subtotalCell = row.querySelector(".subtotal-cell");
 
-    if (!produtoSelect || !quantidadeInput || !precoInput || !precoHidden) return;
-
-    produtoSelect.addEventListener("change", () => {
-        const selectedOption = produtoSelect.selectedOptions[0];
-        const preco = parseFloat(selectedOption?.dataset?.precoUnitario || "0") || 0;
-
-        precoInput.value = preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-        precoHidden.value = preco;
-        calcularTotalPedido();
-    });
+    if (!quantidadeInput || !precoHidden || !subtotalCell) return;
 
     quantidadeInput.addEventListener("input", () => {
-        if (quantidadeInput.value < 1) quantidadeInput.value = 1;
+        let quantidade = parseInt(quantidadeInput.value);
+        if (quantidade < 1 || isNaN(quantidade)) {
+            quantidade = 1;
+            quantidadeInput.value = 1;
+        }
+
+        const preco = parseFloat(precoHidden.value || "0");
+        const subtotal = preco * quantidade;
+
+        subtotalCell.textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
         calcularTotalPedido();
     });
 }
@@ -160,7 +158,7 @@ function carregarItensExistentes() {
 function calcularTotalPedido() {
     let total = 0;
 
-    document.querySelectorAll("#listaItensPedido .row").forEach(row => {
+    document.querySelectorAll("#listaItensPedido tr").forEach(row => {
         const preco = parseFloat(row.querySelector(".preco-hidden")?.value || "0");
         const quantidade = parseInt(row.querySelector(".quantidade-input")?.value || "0");
         total += preco * quantidade;
@@ -187,13 +185,10 @@ async function abrirModalPedido(id, somenteVisualizacao) {
 
         const html = await response.text();
 
-        // Injeta o HTML do modal
         document.getElementById('pedidoModalBody').innerHTML = html;
 
-        // Inicializa os dados (produtos, clientes, itens)
         await inicializarModalPedido();
 
-        // Configura e mostra o modal só depois que tudo estiver pronto
         $('#pedidoModal').modal({ backdrop: 'static', keyboard: false });
         $('#pedidoModal').modal('show');
     } catch (error) {
@@ -229,5 +224,77 @@ function excluirPedido(id) {
                 esconderSpinner();
             }
         });
+    });
+}
+
+/**
+* Inicializa autocomplete de cliente e produto
+*/
+function inicializarAutocompletes() {
+    const clienteInput = document.getElementById("clienteBusca");
+    const clienteHidden = document.getElementById("clienteId");
+    const sugestoesCliente = document.getElementById("sugestoesCliente");
+
+    clienteInput?.addEventListener("input", () => {
+        const termo = clienteInput.value.toLowerCase();
+        sugestoesCliente.innerHTML = "";
+
+        if (!termo || termo.length < 2) return;
+
+        const resultados = clientesDisponiveis.filter(c =>
+            c.Nome.toLowerCase().includes(termo)
+        ).slice(0, 10);
+
+        resultados.forEach(c => {
+            const div = document.createElement("div");
+            div.textContent = c.Nome;
+            div.addEventListener("click", () => {
+                clienteInput.value = c.Nome;
+                clienteHidden.value = c.Id;
+                sugestoesCliente.innerHTML = "";
+            });
+            sugestoesCliente.appendChild(div);
+        });
+    });
+
+    document.addEventListener("click", e => {
+        if (!sugestoesCliente.contains(e.target) && e.target !== clienteInput) {
+            sugestoesCliente.innerHTML = "";
+        }
+    });
+
+    const produtoInput = document.getElementById("produtoBusca");
+    const sugestoesProduto = document.getElementById("sugestoesProduto");
+
+    produtoInput?.addEventListener("input", () => {
+        const termo = produtoInput.value.toLowerCase();
+        sugestoesProduto.innerHTML = "";
+
+        if (!termo || termo.length < 2) return;
+
+        const resultados = produtosDisponiveis.filter(p =>
+            p.Nome.toLowerCase().includes(termo)
+        ).slice(0, 10);
+
+        resultados.forEach(p => {
+            const div = document.createElement("div");
+            div.textContent = `${p.Nome} - ${p.Preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+            div.addEventListener("click", () => {
+                adicionarItemPedido({
+                    produtoId: p.Id,
+                    quantidade: 1,
+                    precoUnitario: p.Preco
+                });
+                produtoInput.value = "";
+                sugestoesProduto.innerHTML = "";
+            });
+            sugestoesProduto.appendChild(div);
+        });
+    });
+
+    document.addEventListener("click", e => {
+        if (!sugestoesProduto.contains(e.target) && e.target !== produtoInput) {
+            sugestoesProduto.innerHTML = "";
+        }
     });
 }
