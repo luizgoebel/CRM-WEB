@@ -42,4 +42,10 @@ public class PedidoServiceClient : IPedidoServiceClient
 
         return resultado!;
     }
+
+    public async Task SalvarPedido(PedidoViewModel pedidoViewModel)
+    {
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"api/Pedido/CriarPedido", pedidoViewModel);
+        await TrataExcecao.TratarResponseException(response);
+    }
 }

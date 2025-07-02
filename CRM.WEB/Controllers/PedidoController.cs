@@ -35,7 +35,8 @@ public class PedidoController : Controller
         try
         {
             int pageSize = 25;
-            PaginacaoResultado<PedidoViewModel> resultado = await this._pedidoServiceClient.ObterPedidosPaginados(filtro, pagina, pageSize);
+            PaginacaoResultado<PedidoViewModel> resultado = 
+                await this._pedidoServiceClient.ObterPedidosPaginados(filtro, pagina, pageSize);
             PedidoIndexViewModel model = new()
             {
                 Itens = resultado.Itens,
@@ -55,7 +56,7 @@ public class PedidoController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 
@@ -65,7 +66,8 @@ public class PedidoController : Controller
         try
         {
             int pageSize = 25;
-            PaginacaoResultado<PedidoViewModel> resultado = await this._pedidoServiceClient.ObterPedidosPaginados(filtro ?? "", page, pageSize);
+            PaginacaoResultado<PedidoViewModel> resultado = 
+                await this._pedidoServiceClient.ObterPedidosPaginados(filtro ?? "", page, pageSize);
 
             PedidoIndexViewModel model = new()
             {
@@ -77,8 +79,10 @@ public class PedidoController : Controller
                 }
             };
 
-            string htmlTabela = await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_TabelaPedidos", model.Itens);
-            string htmlPaginacao = await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_Paginacao", model.Paginacao);
+            string htmlTabela = 
+                await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_TabelaPedidos", model.Itens);
+            string htmlPaginacao = 
+                await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_Paginacao", model.Paginacao);
 
             return Json(new { tabelaHtml = htmlTabela, paginacaoHtml = htmlPaginacao });
         }
@@ -88,15 +92,15 @@ public class PedidoController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 
     [HttpGet]
     public async Task<IActionResult> PreencherModalPedido()
     {
-        List<ProdutoViewModel> produtos = await _produtoServiceClient.ObterTodosProdutos();
-        List<ClienteViewModel> clientes = await _clienteServiceClient.ObterTodosClientes();
+        List<ProdutoViewModel> produtos = await _produtoServiceClient.ObterTodosProdutos()?? new();
+        List<ClienteViewModel> clientes = await _clienteServiceClient.ObterTodosClientes() ?? new();
 
         return Json(new { produtos = produtos, clientes = clientes });
     }
@@ -119,7 +123,7 @@ public class PedidoController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 
@@ -137,7 +141,25 @@ public class PedidoController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
+        }
+    }
+
+    [HttpPost]
+    public async Task<JsonResult> SalvarPedido(PedidoViewModel pedido)
+    {
+        try
+        {
+            await this._pedidoServiceClient.SalvarPedido(pedido);
+            return GerenciadorRespostaJSON.create();
+        }
+        catch (DomainException ex)
+        {
+            return GerenciadorRespostaJSON.create(ex.Message, true);
+        }
+        catch (Exception ex)
+        {
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 }

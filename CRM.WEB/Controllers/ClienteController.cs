@@ -25,7 +25,8 @@ public class ClienteController : Controller
         try
         {
             int pageSize = 25;
-            PaginacaoResultado<ClienteViewModel> resultado = await this._clienteServiceClient.ObterClientesPaginados(filtro, pagina, pageSize);
+            PaginacaoResultado<ClienteViewModel> resultado = 
+                await this._clienteServiceClient.ObterClientesPaginados(filtro, pagina, pageSize);
             ClienteIndexViewModel model = new()
             {
                 Itens = resultado.Itens,
@@ -45,7 +46,7 @@ public class ClienteController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 
@@ -55,7 +56,8 @@ public class ClienteController : Controller
         try
         {
             int pageSize = 25;
-            PaginacaoResultado<ClienteViewModel> resultado = await this._clienteServiceClient.ObterClientesPaginados(filtro ?? "", page, pageSize);
+            PaginacaoResultado<ClienteViewModel> resultado = 
+                await this._clienteServiceClient.ObterClientesPaginados(filtro ?? "", page, pageSize);
 
             ClienteIndexViewModel model = new()
             {
@@ -67,8 +69,10 @@ public class ClienteController : Controller
                 }
             };
 
-            string htmlTabela = await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_TabelaClientes", model.Itens);
-            string htmlPaginacao = await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_Paginacao", model.Paginacao);
+            string htmlTabela = 
+                await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_TabelaClientes", model.Itens);
+            string htmlPaginacao = 
+                await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_Paginacao", model.Paginacao);
 
             return Json(new { tabelaHtml = htmlTabela, paginacaoHtml = htmlPaginacao });
         }
@@ -78,7 +82,7 @@ public class ClienteController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 
@@ -100,7 +104,7 @@ public class ClienteController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 
@@ -118,7 +122,7 @@ public class ClienteController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 }

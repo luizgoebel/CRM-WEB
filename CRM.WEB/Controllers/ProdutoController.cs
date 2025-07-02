@@ -28,7 +28,8 @@ public class ProdutoController : Controller
         try
         {
             int pageSize = 25;
-            PaginacaoResultado<ProdutoViewModel> resultado = await this._produtoServiceClient.ObterProdutosPaginados(filtro, pagina, pageSize);
+            PaginacaoResultado<ProdutoViewModel> resultado = 
+                await this._produtoServiceClient.ObterProdutosPaginados(filtro, pagina, pageSize);
 
             ProdutoIndexViewModel model = new()
             {
@@ -49,7 +50,7 @@ public class ProdutoController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 
@@ -59,7 +60,8 @@ public class ProdutoController : Controller
         try
         {
             int pageSize = 25;
-            PaginacaoResultado<ProdutoViewModel> resultado = await this._produtoServiceClient.ObterProdutosPaginados(filtro ?? "", page, pageSize);
+            PaginacaoResultado<ProdutoViewModel> resultado = 
+                await this._produtoServiceClient.ObterProdutosPaginados(filtro ?? "", page, pageSize);
 
             ProdutoIndexViewModel model = new()
             {
@@ -71,8 +73,10 @@ public class ProdutoController : Controller
                 }
             };
 
-            string htmlTabela = await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_TabelaProdutos", model.Itens);
-            string htmlPaginacao = await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_Paginacao", model.Paginacao);
+            string htmlTabela = 
+                await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_TabelaProdutos", model.Itens);
+            string htmlPaginacao = 
+                await this._renderer.RenderViewToStringAsync(this.ControllerContext, "_Paginacao", model.Paginacao);
 
             return Json(new { tabelaHtml = htmlTabela, paginacaoHtml = htmlPaginacao });
         }
@@ -82,7 +86,7 @@ public class ProdutoController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 
@@ -104,7 +108,7 @@ public class ProdutoController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 
@@ -122,7 +126,7 @@ public class ProdutoController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 
@@ -140,7 +144,7 @@ public class ProdutoController : Controller
         }
         catch (Exception ex)
         {
-            return GerenciadorRespostaJSON.create("Ocorreu um erro inesperado.", true, ex.Message);
+            return GerenciadorRespostaJSON.create(ex.Message, true);
         }
     }
 }

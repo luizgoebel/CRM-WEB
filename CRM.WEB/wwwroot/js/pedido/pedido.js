@@ -298,3 +298,53 @@ function inicializarAutocompletes() {
         }
     });
 }
+
+/**
+ * Salva o pedido
+ */
+function salvarPedido() {
+    const pedido = {
+        Id: $('input[name="Id"]').val() || null,
+        ClienteId: $('#clienteId').val(),
+        Itens: []
+    };
+
+    $('#listaItensPedido tr').each(function () {
+        const produtoId = $(this).find('input[name*="ProdutoId"]').val();
+        const quantidade = parseInt($(this).find('input[name*="Quantidade"]').val());
+        const precoUnitario = parseFloat($(this).find('input[name*="PrecoUnitario"]').val());
+
+        if (produtoId) {
+            pedido.Itens.push({
+                ProdutoId: produtoId,
+                Quantidade: quantidade,
+                PrecoUnitario: precoUnitario
+            });
+        }
+    });
+
+    $.ajax({
+        url: '/Pedido/SalvarPedido',
+        type: 'POST',
+        data: pedido,
+        beforeSend: function () {
+            mostrarSpinner();
+        },
+        success: function (response) {
+            if (response?.contemErro) {
+                mostrarMensagem(response.mensagem);
+                esconderSpinner();
+                return;
+            }
+
+            $('#pedidoModal').modal('hide');
+            esconderSpinner();
+            location.reload();
+        },
+        error: function () {
+            mostrarMensagem("");
+            esconderSpinner();
+        }
+    });
+}
+
