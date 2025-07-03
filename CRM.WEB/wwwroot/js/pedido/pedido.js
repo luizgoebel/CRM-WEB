@@ -2,9 +2,8 @@
 let produtosDisponiveis = [];
 let clientesDisponiveis = [];
 
-/**
- * Função principal para inicializar o modal de pedido
- */
+
+//Função principal para inicializar o modal de pedido
 async function inicializarModalPedido() {
     try {
         await carregarDadosPedido();
@@ -17,9 +16,8 @@ async function inicializarModalPedido() {
     }
 }
 
-/**
- * Busca os dados de produtos e clientes da API
- */
+
+//Busca os dados de produtos e clientes da API
 async function carregarDadosPedido() {
     mostrarSpinner();
     try {
@@ -34,9 +32,7 @@ async function carregarDadosPedido() {
     }
 }
 
-/**
- * Preenche o select de clientes
- */
+//Preenche o select de clientes
 function preencherSelectClientes() {
     const selectCliente = document.getElementById("cliente");
     if (!selectCliente) return;
@@ -53,9 +49,7 @@ function preencherSelectClientes() {
     });
 }
 
-/**
- * Adiciona um item ao pedido
- */
+//Adiciona um item ao pedido
 function adicionarItemPedido(item = null) {
     const container = document.getElementById("listaItensPedido");
     if (!container) return;
@@ -94,9 +88,7 @@ function adicionarItemPedido(item = null) {
     calcularTotalPedido();
 }
 
-/**
- * Remove item do pedido
- */
+//Remove item do pedido
 function removerItemPedido(botao) {
     const row = botao.closest("tr");
     if (row) {
@@ -105,9 +97,7 @@ function removerItemPedido(botao) {
     }
 }
 
-/**
- * Listeners do item
- */
+//Listeners do item
 function adicionarListenersAoItem(row) {
     const quantidadeInput = row.querySelector(".quantidade-input");
     const precoHidden = row.querySelector(".preco-hidden");
@@ -130,9 +120,7 @@ function adicionarListenersAoItem(row) {
     });
 }
 
-/**
- * Carrega itens do pedido (modo edição)
- */
+//Carrega itens do pedido (modo edição)
 function carregarItensExistentes() {
     const hidden = document.getElementById("itensPedidoJson");
     if (!hidden || !hidden.value) return;
@@ -152,9 +140,8 @@ function carregarItensExistentes() {
     }));
 }
 
-/**
- * Soma total do pedido
- */
+
+//Soma total do pedido
 function calcularTotalPedido() {
     let total = 0;
 
@@ -170,9 +157,7 @@ function calcularTotalPedido() {
     }
 }
 
-/**
- * Abre o modal de pedido (async/await, spinner até tudo pronto)
- */
+//Abre o modal de pedido (async/await, spinner até tudo pronto)
 async function abrirModalPedido(id, somenteVisualizacao) {
     mostrarSpinner();
 
@@ -198,9 +183,7 @@ async function abrirModalPedido(id, somenteVisualizacao) {
     }
 }
 
-/**
- * Exclui pedido
- */
+//Exclui pedido
 function excluirPedido(id) {
     confirmarAcao("Tem certeza que deseja excluir este pedido?", function (confirmado) {
         if (!confirmado) return;
@@ -227,9 +210,7 @@ function excluirPedido(id) {
     });
 }
 
-/**
-* Inicializa autocomplete de cliente e produto
-*/
+//Inicializa autocomplete de cliente e produto
 function inicializarAutocompletes() {
     const clienteInput = document.getElementById("clienteBusca");
     const clienteHidden = document.getElementById("clienteId");
@@ -299,9 +280,7 @@ function inicializarAutocompletes() {
     });
 }
 
-/**
- * Salva o pedido
- */
+//Salva o pedido
 function salvarPedido() {
     const pedido = {
         Id: $('input[name="Id"]').val() || null,
@@ -312,13 +291,11 @@ function salvarPedido() {
     $('#listaItensPedido tr').each(function () {
         const produtoId = $(this).find('input[name*="ProdutoId"]').val();
         const quantidade = parseInt($(this).find('input[name*="Quantidade"]').val());
-        const precoUnitario = parseFloat($(this).find('input[name*="PrecoUnitario"]').val());
 
         if (produtoId) {
             pedido.Itens.push({
                 ProdutoId: produtoId,
                 Quantidade: quantidade,
-                PrecoUnitario: precoUnitario
             });
         }
     });
