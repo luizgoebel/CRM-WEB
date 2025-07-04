@@ -14,13 +14,27 @@
                     <!-- Cliente -->
                     <div class="mb-3 position-relative">
                         <label for="clienteBusca" class="form-label">Cliente:</label>
-                        <input type="text" class="form-control" id="clienteBusca" placeholder="Digite o nome do cliente..." @(somenteLeitura ? "disabled" : "") />
-                        <input type="hidden" id="clienteId" name="ClienteId" value="@Model?.ClienteId" />
-                        <div id="sugestoesCliente" class="autocomplete-sugestoes"></div>
+                        <input type="text"
+                               class="form-control"
+                               id="clienteBusca"
+                               placeholder="Digite o nome do cliente..."
+                               value="@Model?.Cliente"
+                               @(somenteLeitura ? "disabled" : "") />
+
+                        <input type="hidden"
+                               id="clienteId"
+                               name="ClienteId"
+                               value="@Model?.ClienteId" />
+
+                        @if (!somenteLeitura)
+                        {
+                            <div id="sugestoesCliente" class="autocomplete-sugestoes"></div>
+                        }
                     </div>
 
+
                     <!-- Produto -->
-                    <div class="mb-3 position-relative">
+                    <div class="mb-3 position-relative" @(somenteLeitura ? "hidden" : "")>
                         <label for="produtoBusca" class="form-label">Adicionar Item:</label>
                         <input type="text" class="form-control" id="produtoBusca" placeholder="Digite o nome do produto..." @(somenteLeitura ? "disabled" : "") />
                         <div id="sugestoesProduto" class="autocomplete-sugestoes"></div>
