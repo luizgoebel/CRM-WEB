@@ -44,7 +44,10 @@
                                     <th style="width: 15%;">Qtd</th>
                                     <th style="width: 20%;">Preço</th>
                                     <th style="width: 20%;">Subtotal</th>
-                                    <th style="width: 10%;">Ações</th>
+                                    @if (!somenteLeitura)
+                                    {
+                                        <th>Ações</th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody id="listaItensPedido">
@@ -67,5 +70,5 @@
     </div>
 
     <!-- Itens existentes (modo edição) -->
-    <input type="hidden" id="itensPedidoJson" value='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Itens))' />
+    <input type="hidden" id="itensPedidoJson" data-visualizacao="@somenteLeitura" value='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Itens))' />
 </form>

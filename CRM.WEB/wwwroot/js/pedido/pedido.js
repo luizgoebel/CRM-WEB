@@ -50,7 +50,7 @@ function preencherSelectClientes() {
 }
 
 //Adiciona um item ao pedido
-function adicionarItemPedido(item = null) {
+function adicionarItemPedido(item = null, somenteVisualizacao = false) {
     const container = document.getElementById("listaItensPedido");
     if (!container) return;
 
@@ -72,15 +72,16 @@ function adicionarItemPedido(item = null) {
         <td>
             <input type="number" name="Itens[${index}].Quantidade" 
                    class="form-control form-control-sm quantidade-input" 
-                   min="1" value="${quantidade}" />
+                   min="1" value="${quantidade}" ${somenteVisualizacao ? "disabled" : ""} />
         </td>
         <td>${preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
         <td class="subtotal-cell">${subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+        ${somenteVisualizacao ? "" : `
         <td class="text-center">
             <button type="button" class="btn btn-sm btn-outline-danger" onclick="removerItemPedido(this)">
                 <i class="bi bi-trash"></i>
             </button>
-        </td>
+        </td>`}
     `;
 
     container.appendChild(tr);
@@ -122,22 +123,24 @@ function adicionarListenersAoItem(row) {
 
 //Carrega itens do pedido (modo edição)
 function carregarItensExistentes() {
-    const hidden = document.getElementById("itensPedidoJson");
-    if (!hidden || !hidden.value) return;
+    const itensPedidoJson = document.getElementById("itensPedidoJson");
+    const somenteVisualizacao = itensPedidoJson.dataset.visualizacao?.toLowerCase() === "true";
+    if (!itensPedidoJson || !itensPedidoJson.value) return;
 
     let itens = [];
     try {
-        itens = JSON.parse(hidden.value);
+        itens = JSON.parse(itensPedidoJson.value);
     } catch (error) {
         mostrarMensagem("");
         return;
     }
 
     itens.forEach(item => adicionarItemPedido({
-        produtoId: item.produtoId,
-        quantidade: item.quantidade,
-        precoUnitario: item.precoUnitario
-    }));
+        produtoId: item.ProdutoId,
+        quantidade: item.Quantidade,
+        precoUnitario: item.PrecoUnitario
+    },
+        somenteVisualizacao));
 }
 
 
