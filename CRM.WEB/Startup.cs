@@ -33,7 +33,7 @@ public class Startup
 
         services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-        // ✅ Configura o HttpClient já com o BaseAddress direto do appsettings.json  
+        // Configura o HttpClient já com o BaseAddress direto do appsettings.json  
         services.AddHttpClient<IProdutoServiceClient, ProdutoServiceClient>(client =>
         {
             client.BaseAddress = crmApiBaseAddress;

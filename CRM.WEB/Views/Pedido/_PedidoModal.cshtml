@@ -9,8 +9,8 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="row">
-                <!-- Coluna esquerda -->
                 <div class="col-md-5">
+                  
                     <!-- Cliente -->
                     <div class="mb-3 position-relative">
                         <label for="clienteBusca" class="form-label">Cliente:</label>
@@ -31,7 +31,6 @@
                             <div id="sugestoesCliente" class="autocomplete-sugestoes"></div>
                         }
                     </div>
-
 
                     <!-- Produto -->
                     <div class="mb-3 position-relative" @(somenteLeitura ? "hidden" : "")>
@@ -64,9 +63,11 @@
                                     }
                                 </tr>
                             </thead>
+
                             <tbody id="listaItensPedido">
                                 <!-- preenchido por JS -->
                             </tbody>
+
                         </table>
                     </div>
                 </div>
