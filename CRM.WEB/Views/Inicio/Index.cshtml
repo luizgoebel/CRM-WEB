@@ -1,4 +1,6 @@
-﻿@{
+﻿@model CRM.Web.Models.DashboardViewModel
+
+@{
     ViewData["Title"] = "Dashboard";
 }
 
@@ -21,7 +23,7 @@
                         <i class="bi bi-people-fill dashboard-icon text-primary me-2"></i>
                         <div class="dashboard-card-body">
                             <div class="dashboard-subtitulo">Clientes Ativos</div>
-                            <div class="fw-bold fs-6 mb-0">1.250</div>
+                            <div class="fw-bold fs-6 mb-0">@Model.TotalClientesAtivos</div>
                             <div class="text-success small">Atualizado hoje</div>
                         </div>
                     </div>
@@ -33,7 +35,7 @@
                         <i class="bi bi-box-seam dashboard-icon text-success me-2"></i>
                         <div class="dashboard-card-body">
                             <div class="dashboard-subtitulo">Produtos no Estoque</div>
-                            <div class="fw-bold fs-6 mb-0">3.764</div>
+                            <div class="fw-bold fs-6 mb-0">@Model.TotalProdutosEstoque</div>
                             <div class="text-success small">Estoque atualizado</div>
                         </div>
                     </div>
@@ -45,7 +47,7 @@
                         <i class="bi bi-cart-check dashboard-icon text-warning me-2"></i>
                         <div class="dashboard-card-body">
                             <div class="dashboard-subtitulo">Pedidos do Dia</div>
-                            <div class="fw-bold fs-6 mb-0">128</div>
+                            <div class="fw-bold fs-6 mb-0">@Model.TotalPedidosHoje</div>
                             <div class="text-warning small">Inclui pendências</div>
                         </div>
                     </div>
