@@ -1,0 +1,93 @@
+name: Deploy Web MVC Project to Cloud Run
+
+on:
+  push:
+    branches:
+      - development
+      - master
+  pull_request:
+    branches:
+      - development
+
+env:
+  PROJECT_ID: crm-api-465004
+  SERVICE_NAME_WEB: crm-web-mvc
+  REGION: us-central1
+  AR_REPO_NAME: web-repo
+  
+  API_URL_PROD: https://crm-api-775924190541.us-central1.run.app 
+  API_URL_DEV: https://crm-api-dev-url.us-central1.run.app
+
+jobs:
+  build-test-and-deploy-web:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restaurar dependências
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Testar
+        run: dotnet test --no-build --verbosity normal --configuration Release
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }} 
+          scopes: '["https://www.googleapis.com/auth/cloud-platform"]'
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Configurar Docker para usar Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build e Push da imagem Docker para Artifact Registry
+        run: |
+          AR_IMAGE_PATH="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_NAME }}/${{ env.SERVICE_NAME_WEB }}:${{ github.sha }}"
+          echo "Building image: ${AR_IMAGE_PATH}"
+          docker build -f Dockerfile -t ${AR_IMAGE_PATH} . 
+          docker push ${AR_IMAGE_PATH}
+        working-directory: . 
+
+      - name: Deploy para Cloud Run (Desenvolvimento)
+        if: github.ref == 'refs/heads/development'
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          service: ${{ env.SERVICE_NAME_WEB }}-dev
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_NAME }}/${{ env.SERVICE_NAME_WEB }}:${{ github.sha }}
+          region: ${{ env.REGION }}
+          env_vars: |
+            AppSettings__CrmApi: '${{ env.API_URL_DEV }}'
+            ASPNETCORE_ENVIRONMENT: 'Development' 
+          allow_unauthenticated: true
+
+      - name: Deploy para Cloud Run (Produção)
+        if: github.ref == 'refs/heads/master'
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          service: ${{ env.SERVICE_NAME_WEB }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_NAME }}/${{ env.SERVICE_NAME_WEB }}:${{ github.sha }}
+          region: ${{ env.REGION }}
+          env_vars: |
+            AppSettings__CrmApi: "${{ env.API_URL_PROD }}"
+            ASPNETCORE_ENVIRONMENT: "Production" 
+          allow_unauthenticated: true
