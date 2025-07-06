@@ -1,7 +1,6 @@
-# Use uma imagem base ASP.NET para o runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 80 # A porta padrão para ASP.NET Core
+EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
