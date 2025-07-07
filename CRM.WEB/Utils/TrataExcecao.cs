@@ -7,45 +7,24 @@ using System.Threading.Tasks;
 
 namespace CRM.Web.Utils;
 
-public class TrataExcecao
+public static class TrataExcecao
 {
     public static async Task TratarResponseException(HttpResponseMessage httpResponseMessage)
     {
-        try
+        if (!httpResponseMessage.IsSuccessStatusCode)
         {
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                string jsonResponse = await httpResponseMessage.Content.ReadAsStringAsync();
+            // --- NOVAS LINHAS DE LOG PARA DEPURAR ---
+            var statusCode = httpResponseMessage.StatusCode;
+            var responseBody = await httpResponseMessage.Content.ReadAsStringAsync();
+            var requestUri = httpResponseMessage.RequestMessage?.RequestUri;
 
-                if (string.IsNullOrWhiteSpace(jsonResponse))
-                    throw new Exception("Erro na requisição. Nenhuma resposta foi recebida.");
+            Console.WriteLine($"ERRO API - Detalhes da Resposta:");
+            Console.WriteLine($"  Status Code: {statusCode}");
+            Console.WriteLine($"  Request URI: {requestUri}");
+            Console.WriteLine($"  Response Body: {responseBody}");
+            // --- FIM DAS NOVAS LINHAS DE LOG ---
 
-                var detalhesErro = JsonConvert.DeserializeObject<DetalhesDoErro>(jsonResponse);
-
-                if (detalhesErro is null || string.IsNullOrWhiteSpace(detalhesErro.Mensagem))
-                    throw new Exception("Erro desconhecido retornado pela API.");
-
-                switch ((int)httpResponseMessage.StatusCode)
-                {
-                    case 400:
-                        throw new DomainException(detalhesErro.Mensagem, detalhesErro.ObjetoErro);
-                    case 503:
-                        throw new ServiceException(detalhesErro.Mensagem, detalhesErro.ObjetoErro);
-                    case 401:
-                    case 403:
-                        throw new UnauthorizedAccessException("Você não tem permissão para executar essa operação.");
-                    case 500:
-                        throw new Exception("Erro interno do servidor.");
-                    default:
-                        throw new Exception(detalhesErro.Mensagem);
-                }
-            }
-        }
-        catch (DomainException ex) { throw ex; }
-        catch (ServiceException ex) { throw ex; }
-        catch (UnauthorizedAccessException ex) { throw new Exception(ex.Message); }
-        catch
-        {
+            // Linha 49 (ou onde a exceção é lançada no seu código original)
             throw new Exception("Ocorreu um erro não tratado pelo sistema, por favor consulte o suporte.");
         }
     }
