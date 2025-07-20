@@ -1,0 +1,23 @@
+# docker-compose.web.yml
+# Este arquivo gerencia o serviço do seu projeto web (Front-end).
+
+services:
+  crm.web: # Seu serviço para o projeto web (Front-end)
+    build:
+      context: . # O contexto de build é o diretório onde este docker-compose.web.yml está (C:\Users\source\repos\CRM-WEB)
+      dockerfile: Dockerfile # ATENÇÃO: Se o seu Dockerfile estiver em uma subpasta (ex: src/CRM.Web/Dockerfile), ajuste para 'src/CRM.Web/Dockerfile'
+    ports:
+      - "5000:80" # Mapeia a porta 5000 do host para a porta 80 do contêiner web
+    environment:
+      # A URL da API, usando o nome do contêiner da API na rede compartilhada
+      - ASPNETCORE_ENVIRONMENT=Development # Define o ambiente para Desenvolvimento
+      - API_BASE_URL=http://crm-api-app:8080 # IMPORTANTE: Use o container_name da API aqui
+    restart: always # Reinicia o contêiner automaticamente
+    container_name: crm-web-app # Nome personalizado para o contêiner do Front-end
+    networks: # Define a rede à qual este serviço pertence
+      - crm_network # Conecta-se à rede compartilhada
+
+networks:
+  crm_network: # Referencia a rede externa que será criada pelo docker-compose.api.yml
+    name: crm_shared_network # O nome da rede deve ser o mesmo definido em docker-compose.api.yml
+    external: true # Indica que esta rede já existe e não deve ser criada por este arquivo Compose

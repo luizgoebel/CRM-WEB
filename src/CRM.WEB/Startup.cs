@@ -24,7 +24,22 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        var crmApiBaseAddress = new Uri(Configuration.GetSection("AppSettings")["CrmApi"]);
+        // Tenta ler a URL da API da variável de ambiente primeiro
+        var apiBaseUrlFromEnv = Environment.GetEnvironmentVariable("API_BASE_URL");
+        Uri crmApiBaseAddress;
+
+        if (!string.IsNullOrEmpty(apiBaseUrlFromEnv))
+        {
+            crmApiBaseAddress = new Uri(apiBaseUrlFromEnv);
+            Console.WriteLine($"Usando API_BASE_URL do ambiente: {apiBaseUrlFromEnv}"); // Log para depuração
+        }
+        else
+        {
+            // Fallback para ler do appsettings.json se a variável de ambiente não estiver definida
+            crmApiBaseAddress = new Uri(Configuration.GetSection("AppSettings")["CrmApi"]);
+            Console.WriteLine($"Usando API_BASE_URL do appsettings.json: {crmApiBaseAddress}"); // Log para depuração
+        }
+
         services.AddMemoryCache();
         services.AddControllersWithViews();
         ConfigurarUsoCamelCaseJSON(services);
@@ -33,7 +48,7 @@ public class Startup
 
         services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-        // Configura o HttpClient já com o BaseAddress direto do appsettings.json  
+        // Configura o HttpClient já com o BaseAddress obtido (da variável de ambiente ou appsettings.json)
         services.AddHttpClient<IProdutoServiceClient, ProdutoServiceClient>(client =>
         {
             client.BaseAddress = crmApiBaseAddress;
