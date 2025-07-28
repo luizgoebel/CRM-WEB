@@ -35,11 +35,11 @@ jobs:
 
       - name: Restaurar dependências
         # Assumindo que a solução web é CRM-WEB.sln e está na pasta src/
-        run: dotnet restore src/CRM.Web/CRM.Web.csproj # Restaurar apenas o projeto web para otimizar
+        run: dotnet restore src/CRM.Web.csproj # Restaurar apenas o projeto web para otimizar
 
       - name: Build do Projeto Web
         # Assumindo que o projeto web é CRM.Web.csproj e está na pasta src/CRM.Web/
-        run: dotnet build src/CRM.Web/CRM.Web.csproj --no-restore --configuration Release
+        run: dotnet build src/CRM.Web.csproj --no-restore --configuration Release
 
       # Removido o passo de Executar Testes Unitários (Web) conforme sua solicitação
 
