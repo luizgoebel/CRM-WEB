@@ -38,8 +38,9 @@ jobs:
         run: dotnet restore src/CRM-WEB.sln
 
       - name: Build do Projeto Web
-        # Caminho do projeto ajustado para src/CRM.Web/CRM.Web.csproj
-        run: dotnet build src/CRM.Web/CRM.Web.csproj --no-restore --configuration Release
+        # CORRIGIDO: Compilar a solução inteira em vez de um projeto específico.
+        # Isso garante que todos os projetos dentro da solução sejam construídos corretamente.
+        run: dotnet build src/CRM-WEB.sln --no-restore --configuration Release
 
       # Removido o passo de Executar Testes Unitários (Web) conforme sua solicitação
 
