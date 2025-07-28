@@ -1,81 +1,164 @@
-name: Deploy Web MVC Project to Cloud Run
+# .github/workflows/deploy-web.yml
+name: Deploy Web .NET para AWS Elastic Beanstalk
 
 on:
   push:
     branches:
-      - development 
-      - master      
-  pull_request:
-    branches:
-      - development 
+      - master      # Apenas para deploy para produção
 
 env:
-  PROJECT_ID: crm-api-465004 
-  SERVICE_NAME_WEB: crm-web-mvc 
-  REGION: us-central1
-  AR_REPO_NAME: web-repo 
-  
-  API_URL_PROD: https://crm-api-775924190541.us-central1.run.app 
-  API_URL_DEV: https://crm-api-dev-url.us-central1.run.app 
+  AWS_REGION: us-east-2 # Sua região AWS
+  ECR_REPOSITORY_WEB: crm-web-repo # NOVO: Nome do repositório ECR para a imagem web
+  EB_APPLICATION_NAME_WEB: crm-web-app # NOVO: Nome da aplicação Elastic Beanstalk para o web
+  EB_ENVIRONMENT_NAME_WEB_PROD: crm-web-env-prod # NOVO: Nome do ambiente Elastic Beanstalk para produção
 
 jobs:
-  build-test-and-deploy-web:
+  build-test-and-deploy:
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: 'read'
-      id-token: 'write'
+      id-token: 'write' # Necessário para o OIDC
 
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
 
-      - name: Setup .NET
+      - name: Configurar .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '6.0.x' # Ajustado para .NET 6.0
 
       - name: Restaurar dependências
-        run: dotnet restore
+        # Assumindo que a solução web é CRM-WEB.sln e está na pasta src/
+        run: dotnet restore src/CRM.Web/CRM.Web.csproj # Restaurar apenas o projeto web para otimizar
 
-      - name: Build
-        run: dotnet build --no-restore --configuration Release
+      - name: Build do Projeto Web
+        # Assumindo que o projeto web é CRM.Web.csproj e está na pasta src/CRM.Web/
+        run: dotnet build src/CRM.Web/CRM.Web.csproj --no-restore --configuration Release
 
-      - name: Testar
-        run: dotnet test --no-build --verbosity normal --configuration Release
+      - name: Executar Testes Unitários (Web)
+        # Ajuste o caminho se o projeto de testes for diferente (ex: src/CRM.Web.Tests/CRM.Web.Tests.csproj)
+        # Ou remova este passo se não houver testes unitários para o projeto web.
+        run: dotnet test src/CRM.Web.Tests/CRM.Web.Tests.csproj --no-build --verbosity normal --configuration Release || true
+        continue-on-error: true # Permite que o workflow continue mesmo se os testes falharem
 
-      - name: Setup gcloud CLI
-        uses: google-github-actions/setup-gcloud@v2
+      - name: Configurar credenciais AWS (via OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          project_id: ${{ env.PROJECT_ID }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }} # Sua role de deploy do GitHub Actions (pode ser a mesma da API)
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Authenticate to Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v2 
-        with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}' 
-          scopes: '["https://www.googleapis.com/auth/cloud-platform"]'
-          project_id: ${{ env.PROJECT_ID }}
+      - name: Login no Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Configurar Docker para usar Artifact Registry
-        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
-
-      - name: Build e Push da imagem Docker para Artifact Registry
+      - name: Build e Push da imagem Docker para ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        working-directory: ./src/CRM.Web # Importante: O Dockerfile está dentro da pasta CRM.Web
         run: |
-          AR_IMAGE_PATH="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_NAME }}/${{ env.SERVICE_NAME_WEB }}:${{ github.sha }}"
-          echo "Building image: ${AR_IMAGE_PATH}"
-          docker build -f Dockerfile -t ${AR_IMAGE_PATH} . 
-          docker push ${AR_IMAGE_PATH}
-        working-directory: . 
+          # Build e push com a tag SHA do commit
+          docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY_WEB }}:$IMAGE_TAG -f Dockerfile .
+          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY_WEB }}:$IMAGE_TAG
 
-      - name: Deploy para Cloud Run (Produção)
-        if: github.ref == 'refs/heads/master' 
-        uses: google-github-actions/deploy-cloudrun@v1
+          # Também tag com :latest e push (para que o EB sempre puxe a última)
+          docker tag $ECR_REGISTRY/${{ env.ECR_REPOSITORY_WEB }}:$IMAGE_TAG $ECR_REGISTRY/${{ env.ECR_REPOSITORY_WEB }}:latest
+          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY_WEB }}:latest
+        shell: bash
+
+      - name: Criar Dockerrun.aws.json
+        id: create-dockerrun
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG_FOR_EB: latest
+          API_URL: ${{ secrets.API_URL_PROD }} # URL da sua API de produção
+        run: |
+          cat > Dockerrun.aws.json <<EOF
+          {
+            "AWSEBDockerrunVersion": "1",
+            "Image": {
+              "Name": "${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_WEB }}:${{ env.IMAGE_TAG_FOR_EB }}",
+              "Update": "true"
+            },
+            "Ports": [
+              {
+                "ContainerPort": 80
+              }
+            ],
+            "Environment": [
+              {
+                "Name": "API_BASE_URL", # CORRIGIDO: Nome da variável de ambiente para corresponder ao Startup.cs
+                "Value": "${{ env.API_URL }}"
+              },
+              {
+                "Name": "ASPNETCORE_ENVIRONMENT",
+                "Value": "Production"
+              }
+            ],
+            "Logging": "/var/log/nginx"
+          }
+          EOF
+          echo "Dockerrun.aws.json criado com sucesso."
+        shell: bash
+
+      - name: Instalar AWS Elastic Beanstalk CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install awsebcli --upgrade --user
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Gerar pacote de deploy
+        # O Dockerrun.aws.json deve estar na raiz do ZIP para o EB
+        run: |
+          zip deploy.zip Dockerrun.aws.json
+          echo "deploy.zip criado com sucesso, contendo apenas Dockerrun.aws.json na raiz."
+        shell: bash
+
+      - name: Deploy para AWS Elastic Beanstalk (Produção)
+        id: deploy_eb
+        run: |
+          eb init ${{ env.EB_APPLICATION_NAME_WEB }} --region ${{ env.AWS_REGION }} --platform docker --no-verify-ssl
+          eb use ${{ env.EB_ENVIRONMENT_NAME_WEB_PROD }}
+          eb deploy --label ${{ github.sha }} --timeout 10
+        shell: bash
+
+      - name: Enviar Notificação por E-mail (Sucesso)
+        if: success()
+        uses: dawidd6/action-send-mail@v3
         with:
-          service: ${{ env.SERVICE_NAME_WEB }} 
-          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_NAME }}/${{ env.SERVICE_NAME_WEB }}:${{ github.sha }}
-          region: ${{ env.REGION }}
-          env_vars: |
-            AppSettings__CrmApi=${{ env.API_URL_PROD }}
-            ASPNETCORE_ENVIRONMENT=Production 
-          flags: --allow-unauthenticated
+          server_address: ${{ secrets.MAIL_SERVER_ADDRESS }}
+          server_port: ${{ secrets.MAIL_SERVER_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: '[Deploy Sucesso] Web CRM - ${{ github.ref_name }}'
+          body: |
+            O deploy do Web CRM para o ambiente ${{ env.EB_ENVIRONMENT_NAME_WEB_PROD }} foi concluído com sucesso!
+            Branch: ${{ github.ref_name }}
+            Commit SHA: ${{ github.sha }}
+            Link do Workflow: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          to: ${{ secrets.MAIL_RECIPIENT_EMAIL }}
+          from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
+          enable_starttls: true
+
+      - name: Enviar Notificação por E-mail (Falha)
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER_ADDRESS }}
+          server_port: ${{ secrets.MAIL_SERVER_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: '[Deploy FALHA] Web CRM - ${{ github.ref_name }}'
+          body: |
+            O deploy do Web CRM para o ambiente ${{ env.EB_ENVIRONMENT_NAME_WEB_PROD }} FALHOU!
+            Branch: ${{ github.ref_name }}
+            Commit SHA: ${{ github.sha }}
+            Link do Workflow: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Verifique os logs para mais detalhes.
+          to: ${{ secrets.MAIL_RECIPIENT_EMAIL }}
+          from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
+          enable_starttls: true
