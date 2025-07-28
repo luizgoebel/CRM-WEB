@@ -12,9 +12,7 @@ env:
   ECR_REPOSITORY_WEB: crm-web-repo # Nome do repositório ECR para a imagem web
   EB_APPLICATION_NAME_WEB: crm-web-app # Nome da aplicação Elastic Beanstalk para o web
   EB_ENVIRONMENT_NAME_WEB_PROD: crm-web-env-prod # Nome do ambiente Elastic Beanstalk para produção
-  # REMOVIDO: EB_ENVIRONMENT_NAME_WEB_DEV, pois o deploy será sempre para produção
   API_URL_PROD: ${{ secrets.API_URL_PROD }} # URL da sua API de produção (do segredo)
-  # REMOVIDO: API_URL_DEV, pois a API será sempre configurada para produção
 
 jobs:
   build-and-deploy: # Nome do job ajustado para refletir o comportamento
@@ -28,18 +26,20 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
+      # Removido o passo de depuração 'Listar arquivos para depuração'
+
       - name: Configurar .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6.0.x' # Ajustado para .NET 6.0
 
       - name: Restaurar dependências
-        # Assumindo que a solução web é CRM-WEB.sln e está na pasta src/
-        run: dotnet restore src/CRM.WEB.sln # Restaurar apenas o projeto web para otimizar
+        # Caminho da solução ajustado para src/CRM-WEB.sln
+        run: dotnet restore src/CRM-WEB.sln
 
       - name: Build do Projeto Web
-        # Assumindo que o projeto web é CRM.Web.csproj e está na pasta src/CRM.Web/
-        run: dotnet build src/CRM.WEB.sln --no-restore --configuration Release
+        # Caminho do projeto ajustado para src/CRM.Web/CRM.Web.csproj
+        run: dotnet build src/CRM.Web/CRM.Web.csproj --no-restore --configuration Release
 
       # Removido o passo de Executar Testes Unitários (Web) conforme sua solicitação
 
@@ -62,7 +62,8 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
-        working-directory: ./src/CRM.Web # Importante: O Dockerfile está dentro da pasta CRM.Web
+        # working-directory deve ser a pasta que contém o Dockerfile, que é src/CRM.Web
+        working-directory: ./src/CRM.Web
         # Este passo será executado APENAS para a branch master
         if: github.ref == 'refs/heads/master'
         run: |
