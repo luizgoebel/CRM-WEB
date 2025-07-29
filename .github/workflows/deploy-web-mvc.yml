@@ -26,8 +26,6 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
-      # Removido o passo de depuração 'Listar arquivos para depuração'
-
       - name: Configurar .NET SDK
         uses: actions/setup-dotnet@v4
         with:
@@ -41,8 +39,6 @@ jobs:
         # CORRIGIDO: Compilar a solução inteira em vez de um projeto específico.
         # Isso garante que todos os projetos dentro da solução sejam construídos corretamente.
         run: dotnet build src/CRM-WEB.sln --no-restore --configuration Release
-
-      # Removido o passo de Executar Testes Unitários (Web) conforme sua solicitação
 
       - name: Configurar credenciais AWS (via OIDC)
         # Este passo é necessário para autenticar com a AWS para ECR e Elastic Beanstalk
@@ -63,12 +59,14 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
-        # working-directory deve ser a pasta que contém o Dockerfile, que é src/CRM.Web
-        working-directory: ./src/CRM.Web
+        # CORRIGIDO: working-directory deve ser a pasta que contém o Dockerfile, que é a raiz do repositório (./)
+        working-directory: ./
         # Este passo será executado APENAS para a branch master
         if: github.ref == 'refs/heads/master'
         run: |
           # Build e push com a tag SHA do commit
+          # O -f Dockerfile especifica o Dockerfile na raiz do working-directory
+          # O . no final especifica o contexto de build, que é o working-directory (a raiz do repo)
           docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY_WEB }}:$IMAGE_TAG -f Dockerfile .
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY_WEB }}:$IMAGE_TAG
 
