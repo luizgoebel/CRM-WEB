@@ -363,4 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Configurações de ambiente específicas para desenvolvimento (segredos locais)
-appsettings.Development.json
+src/CRM.WEB/appsettings.Development.json
